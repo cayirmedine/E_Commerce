@@ -43,18 +43,12 @@ router.post("/uploadFile", upload.single('imgPath'), (req, res, next) => {
   res.send(req.file);
 })
 
-// router.post("/addCategory", uploadImg, (req, res, next) => {
-//   cloudinary.uploader.upload(req.file.path, (error, ress) => {
-//     if(error) {
-//       ress.send(error);
-//     } else {
-//       catModel.create({
-//         title: req.body.title,
-//         imgPath: ress.url
-//     }).then((result) => {res.json({data: result})}, (err) => res.send(err));
-//     }
-//   });
+router.post("/addCategory", upload.single('imgPath'), (req, res, next) => {
+  catModel.create({
+    title: req.body.title,
+    imgPath: req.file.url
+  }).then((result) => {res.json({data: result})}, (err) => res.send(err));
     
-// })
+})
 
 module.exports = router;
