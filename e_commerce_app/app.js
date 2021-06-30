@@ -7,6 +7,9 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var productRouter = require("./routes/product");
+// var accRouter = require("./routes/account");
+// var cartRouter = require("./routes/cart");
+// var homeRouter = require("./routes/home");
 
 var app = express();
 
@@ -23,6 +26,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/product', productRouter);
+// app.use('/account', accRouter);
+// app.use('/cart', cartRouter);
+// app.use('/home', homeRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -39,5 +45,14 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+// try {
+//   fs.rmdirSync(dir, { recursive: true });
+
+//   console.log(`${dir} is deleted!`);
+// } catch (err) {
+//   console.error(`Error while deleting ${dir}.`);
+// }
+
 
 module.exports = app;
