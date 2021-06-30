@@ -1,8 +1,11 @@
 var Sequelize = require("sequelize");
 
-var sequelize = new Sequelize("E_Commerce", "root", "929307_Hm", {
-    host: "localhost",
-    dialect: "mysql"
+var dotenv = require('dotenv');
+dotenv.config();
+
+var sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
+    host: process.env.DB_HOST,
+    dialect: process.env.DB_DIALECT
 }); 
 
 const users = require('../e_commerce_app/models/users');

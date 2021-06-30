@@ -1,10 +1,7 @@
 var express = require('express');
-const { usersModel } = require('../db');
 var router = express.Router();
 
-router.get("/", (req, res, next) => {
-  res.send("Test")
-})
+const { usersModel } = require('../db');
 
 router.post('/signUp', (req, res, next) => {
   usersModel.create(req.body).then((result) => {res.json({data: result})}, (err) => console.log(err));
