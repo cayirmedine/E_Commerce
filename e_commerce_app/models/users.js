@@ -1,6 +1,7 @@
 var moment = require("moment");
 
 module.exports = (sequelize, Sequelize) => {
+    
     return sequelize.define("Users", {
         fullName: {
             type: Sequelize.STRING,
