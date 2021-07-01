@@ -1,28 +1,28 @@
 module.exports = (sequelize, Sequelize) => {
     return sequelize.define("Products", {
-        c_id: {
-            type: Sequelize.INTEGER,
+        // c_id: {
+        //     type: Sequelize.INTEGER,
 
-            references: {
-                model: "Categories",
+        //     references: {
+        //         model: "Categories",
 
-                key: 'id'
-            },
+        //         key: 'id'
+        //     },
 
-            allowNull: false
-        },
+        //     allowNull: false
+        // },
 
-        sc_id: {
-            type: Sequelize.INTEGER,
+        // sc_id: {
+        //     type: Sequelize.INTEGER,
 
-            references: {
-                model: "SubCategories",
+        //     references: {
+        //         model: "SubCategories",
 
-                key: 'id'
-            },
+        //         key: 'id'
+        //     },
 
-            allowNull: false
-        },
+        //     allowNull: false
+        // },
 
         title: {
             type: Sequelize.STRING,

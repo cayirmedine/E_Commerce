@@ -4,37 +4,36 @@ var router = express.Router();
 var dotenv = require('dotenv');
 dotenv.config();
 
-const { catModel, subCatModel, productModel } = require('../db');
+const { productCatModel, productSubCatModel, productModel } = require('../db');
 const uploadS3 = require('../fileUpload');
 
 router.get("/Categories", (req, res, next) => {
-  catModel.findAll().then((result) => res.json({data: result}), (err) => res.send("An error occoured"));
+  productCatModel.findAll().then((result) => res.json({data: result}), (err) => res.send("An error occoured"));
 });
 
 router.post("/addCategory", uploadS3.single('imgPath'), (req, res, next) => {
-  catModel.create({
+  productCatModel.create({
     title: req.body.title,
     imgPath: req.file.location
   }).then((result) => {res.json({data: result})}, (err) => res.send(err));
-  
 });
 
-router.get("/subCategories/:cid", (req, res, next) => {
-  subCatModel.findAll({
+router.get("/subCategories/:catId", (req, res, next) => {
+  productSubCatModel.findAll({
     where: {
-      c_id: req.params.cid
+      cat_id: req.params.catId
     }
   }).then((result) => res.json({data: result}));
 });
 
 router.post("/subCategory", (req, res, next) => {
-  subCatModel.create(req.body).then((result) => res.json({data: result}), (err) => {res.send(err)});
+  productSubCatModel.create(req.body).then((result) => res.json({data: result}), (err) => {res.send(err)});
 });
 
-router.get("/products/:scid", (req, res, next) => {
+router.get("/products/:subCatId", (req, res, next) => {
   productModel.findAll({
     where: {
-      sc_id: req.params.scid
+      subCat_id: req.params.subCatId
     }
   }).then((result) => res.json({data: result}));
 });
@@ -49,8 +48,8 @@ router.get("/product_detail/:id", (req, res, next) => {
 
 router.post("/addProduct", uploadS3.single("imgPath"), (req, res, next) => {
   productModel.create({
-    c_id: req.body.c_id,
-    sc_id: req.body.sc_id,
+    cat_id: req.body.cat_id,
+    subCat_id: req.body.subCat_id,
     title: req.body.title,
     imgPath: req.file.location,
     unitPrice: req.body.unitPrice,

@@ -17,25 +17,37 @@ const orders = require('../e_commerce_app/models/orders');
 const slider = require('../e_commerce_app/models/slider');
 const subCategory = require('../e_commerce_app/models/subCategory');
 const product = require('../e_commerce_app/models/product');
+
 const usersModel = users(sequelize, Sequelize);
 const addressModel = address(sequelize, Sequelize);
 const basketModel = basket(sequelize, Sequelize);
-const catModel = category(sequelize, Sequelize);
+const productCatModel = category(sequelize, Sequelize);
 const favModel = favorites(sequelize, Sequelize);
 const orderModel = orders(sequelize, Sequelize);
 const sliderModel = slider(sequelize, Sequelize);
-const subCatModel = subCategory(sequelize, Sequelize);
+const productSubCatModel = subCategory(sequelize, Sequelize);
 const productModel = product(sequelize, Sequelize);
+
+productSubCatModel.belongsTo(productCatModel, {foreignKey: "cat_id"});
+addressModel.belongsTo(usersModel, {foreignKey: "user_id"});
+basketModel.belongsTo(usersModel, {foreignKey: "user_id"});
+favModel.belongsTo(usersModel, {foreignKey: "user_id"});
+orderModel.belongsTo(usersModel, {foreignKey: "user_id"});
+basketModel.hasOne(orderModel, {foreignKey: "basket_id"});
+productModel.belongsTo(productSubCatModel, {foreignKey: "subCat_id"});
+productModel.belongsTo(productCatModel, {foreignKey: "cat_id"});
+productModel.hasMany(basketModel, {foreignKey: "product_id"});
+productModel.hasMany(favModel, {foreignKey: "product_id"});
 
 module.exports = {
     usersModel,
     addressModel,
     basketModel,
-    catModel,
+    productCatModel,
     favModel,
     orderModel,
     sliderModel,
-    subCatModel,
+    productSubCatModel,
     productModel,
     sequelize,
     Sequelize

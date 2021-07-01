@@ -1,16 +1,16 @@
 module.exports = (sequelize, Sequelize) => {
    return sequelize.define("Addresses", {
 
-        u_id: {
-            type: Sequelize.INTEGER,
+        // u_id: {
+        //     type: Sequelize.INTEGER,
 
-            references: {
-                model: "Users",
-                key: "id"
-            },
+        //     references: {
+        //         model: "Users",
+        //         key: "id"
+        //     },
 
-            allowNull: false
-        },
+        //     allowNull: false
+        // },
 
         add_type: {
             type: Sequelize.STRING,
