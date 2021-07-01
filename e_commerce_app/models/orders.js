@@ -3,9 +3,9 @@ module.exports = (sequelize, Sequelize) => {
     return sequelize.define("Orders", {
         u_id: {
             type: Sequelize.INTEGER,
-            reference: {
+            references: {
                 model: "Users",
-                key: "id"
+                key: 'id'
             },
 
             allowNull: false
@@ -13,9 +13,9 @@ module.exports = (sequelize, Sequelize) => {
 
         b_id: {
             type: Sequelize.INTEGER,
-            reference: {
+            references: {
                 model: "Basket",
-                key: "id"
+                key: 'id'
             },
 
             allowNull: false

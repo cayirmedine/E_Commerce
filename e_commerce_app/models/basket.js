@@ -2,18 +2,18 @@ module.exports = (sequelize, Sequelize) => {
     return sequelize.define("Baskets", {
         u_id: {
             type: Sequelize.INTEGER,
-            reference: {
+            references: {
                 model: "Users",
-                key: "id"
+                key: 'id'
             },
             allowNull: false
         },
 
         p_id: {
             type: Sequelize.INTEGER,
-            reference: {
+            references: {
                 model: "Products",
-                key: "id"
+                key: 'id'
             },
 
             allowNull: false
