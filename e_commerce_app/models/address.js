@@ -1,12 +1,12 @@
 module.exports = (sequelize, Sequelize) => {
    return sequelize.define("Addresses", {
 
-        add_type: {
+        addressType: {
             type: Sequelize.STRING,
             allowNull: false
         }, //Delivery or bill address
 
-        add_title: {
+        addressTitle: {
             type: Sequelize.STRING,
             allowNull: false
         },
@@ -21,7 +21,7 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false
         },
 
-        district: {
+        town: {
             type: Sequelize.STRING,
             allowNull: false
         },
@@ -31,21 +31,18 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false
         },
 
-        detail: {
+        addressDetail: {
             type: Sequelize.STRING,
             allowNull: false
         },
 
-        zip_code: {
+        zipCode: {
             type: Sequelize.STRING,
         },
 
         phone: {
-            type: Sequelize.STRING
-        },
-
-        note: {
-            type: Sequelize.STRING
+            type: Sequelize.STRING,
+            allowNull: false
         }
     });
 }

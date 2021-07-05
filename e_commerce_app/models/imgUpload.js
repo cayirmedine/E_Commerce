@@ -1,9 +1,8 @@
 module.exports = (sequelize, Sequelize) => {
-    return sequelize.define("Sliders", {
-        
-        title: {
+    return sequelize.define("Images", {
+        uri: {
             type: Sequelize.STRING,
             allowNull: false
         }
-    });
+    })
 }

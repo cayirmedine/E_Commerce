@@ -3,11 +3,11 @@ var router = express.Router();
 
 const { usersModel } = require('../db');
 
-router.post('/signUp', (req, res, next) => {
+router.post('/sign-up', (req, res, next) => {
   usersModel.create(req.body).then((result) => {res.json({data: result})}, (err) => console.log(err));
 });
 
-router.post('/signIn', (req, res, next) => {
+router.post('/sign-in', (req, res, next) => {
   usersModel.findOne({
     where: {
       phone: req.body.phone

@@ -3,11 +3,6 @@ module.exports = (sequelize, Sequelize) => {
         title: {
             type: Sequelize.STRING,
             allowNull: false
-        },
-
-        imgPath: {
-            type: Sequelize.STRING,
-            allowNull: false
-        }  
+        }
     })
 }

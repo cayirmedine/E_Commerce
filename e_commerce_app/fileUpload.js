@@ -9,7 +9,7 @@ var s3 = new aws.S3({
   
 var uploadS3 = multer({
     storage: multerS3({
-      acl: "public-read",
+      acl: "public-read-write",
       s3: s3,
       bucket: 'e-commerce-storage',
       metadata: (req, file, cb) => {

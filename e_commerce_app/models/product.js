@@ -5,12 +5,7 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING,
             allowNull: false
         },
-
-        imgPath: {
-            type: Sequelize.STRING,
-            allowNull: false
-        },
-
+        
         unitPrice: {
             type: Sequelize.DOUBLE,
             allowNull: false

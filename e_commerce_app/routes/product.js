@@ -4,60 +4,80 @@ var router = express.Router();
 var dotenv = require('dotenv');
 dotenv.config();
 
-const { productCatModel, productSubCatModel, productModel } = require('../db');
+const { productCatModel, productSubCatModel, productModel, subCatsCat, productSubCat, productCat, imageModel, imageSubCat } = require('../db');
 const uploadS3 = require('../fileUpload');
 
-router.get("/Categories", (req, res, next) => {
-  productCatModel.findAll().then((result) => res.json({data: result}), (err) => res.send("An error occoured"));
+router.get("/categories", (req, res, next) => {
+  productCatModel.findAll({
+    include: [ { model: imageModel, attributes: ['id','uri']}]
+  }).then((result) => {
+    res.json({ data: result })
+  })
 });
 
-router.post("/addCategory", uploadS3.single('imgPath'), (req, res, next) => {
-  productCatModel.create({
-    title: req.body.title,
-    imgPath: req.file.location
-  }).then((result) => {res.json({data: result})}, (err) => res.send(err));
+router.post("/add-category", uploadS3.single('image'), async (req, res, next) => {
+  await productCatModel.create({
+    title: req.body.title
+  }).then(async (result) => {
+    await imageModel.create({
+      uri: req.file.location,
+      cat_id: result.id
+    })
+    res.send({data: result});
+  })
 });
 
-router.get("/subCategories/:catId", (req, res, next) => {
+router.get("/sub-categories/:catId", (req, res, next) => {
   productSubCatModel.findAll({
     where: {
       cat_id: req.params.catId
-    }
+    },
+    include: [{model: productCatModel}]
   }).then((result) => res.json({data: result}));
 });
 
-router.post("/subCategory", (req, res, next) => {
-  productSubCatModel.create(req.body).then((result) => res.json({data: result}), (err) => {res.send(err)});
+router.post("/sub-category", (req, res, next) => {
+  productSubCatModel.create(req.body, {include: [{model: productCatModel}]}).then((result) => res.json({data: result}), (err) => {res.send(err)});
 });
 
 router.get("/products/:subCatId", (req, res, next) => {
   productModel.findAll({
     where: {
       subCat_id: req.params.subCatId
-    }
+    },
+    include: [{model: imageModel, attributes: ['id','uri']}]
   }).then((result) => res.json({data: result}));
 });
 
-router.get("/product_detail/:id", (req, res, next) => {
+router.get("/product-detail/:id", (req, res, next) => {
   productModel.findOne({
     where: {
       id: req.params.id
-    }
-  }).then((result) => res.json({data: result}));
+    },
+    include: [ { model: imageModel, attributes: ['id','uri']}]
+  }).then((result) => res.json({data: result})
+  );
 })
 
-router.post("/addProduct", uploadS3.single("imgPath"), (req, res, next) => {
+router.post("/add-product", uploadS3.array("images",5), (req, res, next) => {
   productModel.create({
     cat_id: req.body.cat_id,
     subCat_id: req.body.subCat_id,
     title: req.body.title,
-    imgPath: req.file.location,
     unitPrice: req.body.unitPrice,
     desc: req.body.desc
-  }).then((result) => res.json({data: result}), (err) => {res.send(err)});
+  }).then(async (result) => {
+    req.files.forEach((img) => {
+      imageModel.create({
+        uri: img.location,
+        product_id: result.id
+      })
+    })
+    res.json({data: result})
+  }, (err) => res.send("An error occoured: "+err)) 
 })
 
-router.get("/newProducts", (req, res, next) => {
+router.get("/new-products", (req, res, next) => {
   productModel.findAll({limit: 5, order: [['createdAt', 'DESC']]}).then((result) => res.json({data: result}));
 });
 

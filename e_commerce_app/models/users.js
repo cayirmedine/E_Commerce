@@ -23,7 +23,7 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false,
         },
 
-        bdate: {
+        birthdate: {
             type: Sequelize.DATE,
             allowNull: false,
             get() {
