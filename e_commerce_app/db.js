@@ -40,8 +40,6 @@ productModel.belongsTo(productSubCatModel, {foreignKey: "subCat_id"});
 productModel.belongsTo(productCatModel, {foreignKey: "cat_id"});
 productModel.hasMany(basketModel, {foreignKey: "product_id"});
 productModel.hasMany(favModel, {foreignKey: "product_id"});
-// imageModel.belongsTo(productCatModel, {foreignKey: "cat_id"});
-// imageModel.belongsTo(productModel, {foreignKey: "product_id"});
 sliderModel.hasOne(imageModel, {foreignKey: "slider_id"});
 productCatModel.hasOne(imageModel, {foreignKey: "cat_id"});
 productModel.hasMany(imageModel, {foreignKey: "product_id"});
