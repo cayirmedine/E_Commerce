@@ -1,5 +1,7 @@
 var express = require('express');
 var router = express.Router();
+var app = express();
+var PORT = process.env.PORT;
 
 let { sequelize } = require("../db");
 
@@ -13,5 +15,9 @@ sequelize.sync().then(() => {
 }, (err) => {
   console.log(err);
 });
+
+app.listen(PORT, () => {
+  console.log("Express server listening port " +PORT);
+})
 
 module.exports = router;
