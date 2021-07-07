@@ -7,6 +7,10 @@ dotenv.config();
 const { productCatModel, productSubCatModel, productModel, subCatsCat, productSubCat, productCat, imageModel, imageSubCat } = require('../db');
 const uploadS3 = require('../fileUpload');
 
+router.get("/", (req,res,next) => {
+  res.send("Test");
+})
+
 router.get("/categories", (req, res, next) => {
   productCatModel.findAll({
     include: [ { model: imageModel, attributes: ['id','uri']}]

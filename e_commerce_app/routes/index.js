@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var app = express();
-var PORT = process.env.PORT;
+var PORT = 3000;
 
 let { sequelize } = require("../db");
 
