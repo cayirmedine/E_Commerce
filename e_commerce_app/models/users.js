@@ -1,8 +1,9 @@
 var moment = require("moment");
+const orders = require("./orders");
 
 module.exports = (sequelize, Sequelize) => {
     
-    return sequelize.define("Users", {
+    var Users = sequelize.define("Users", {
         fullName: {
             type: Sequelize.STRING,
             allowNull: false,
@@ -36,4 +37,6 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false,
         },
     });
+
+    return Users;
 }

@@ -1,5 +1,8 @@
+const Users = require('./users');
+const Order = require('./orders')
+
 module.exports = (sequelize, Sequelize) => {
-   return sequelize.define("Addresses", {
+   const Address = sequelize.define("Addresses", {
 
         addressType: {
             type: Sequelize.STRING,
@@ -45,4 +48,11 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false
         }
     });
+
+    Address.associate = models => {
+        Address.belongsTo(models.Users);
+        Address.hasOne(models.Order);
+    };
+
+    return Address;
 }

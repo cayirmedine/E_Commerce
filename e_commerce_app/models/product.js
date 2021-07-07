@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-    return sequelize.define("Products", {
+    var Product = sequelize.define("Products", {
         
         title: {
             type: Sequelize.STRING,
@@ -15,4 +15,14 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING,
         }
     })
+
+    Product.associate = models => {
+        Product.belongsTo(ProductSubCat, {foreignKey: "subCat_id"});
+        Product.belongsTo(ProductCat, {foreignKey: "cat_id"});
+        Product.hasMany(Basket, {foreignKey: "product_id"});
+        Product.hasMany(Fav, {foreignKey: "product_id"});
+        Product.hasMany(Image, {foreignKey: "product_id"});
+    }
+
+    return Product;
 }

@@ -1,6 +1,6 @@
 var moment = require("moment");
 module.exports = (sequelize, Sequelize) => {
-    return sequelize.define("Orders", {
+    var Order = sequelize.define("Orders", {
         
         orderdate: {
             type: Sequelize.DATE,
@@ -34,4 +34,10 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false
         }
     })
+
+    Order.associate = models => {
+        Order.belongsTo(Users, {foreignKey: "user_id"});
+    }
+
+    return Order;
 }

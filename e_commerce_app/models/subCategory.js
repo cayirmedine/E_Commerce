@@ -1,8 +1,14 @@
 module.exports = (sequelize, Sequelize) => {
-    return sequelize.define("SubCategories", {
+    var ProductSubCat = sequelize.define("SubCategories", {
         title: {
             type: Sequelize.STRING,
             allowNull: false
         }
     })
+
+    ProductSubCat.associate = models => {
+        ProductSubCat.belongsTo(ProductCat, {foreignKey: "cat_id"});
+    }
+
+    return ProductSubCat;
 }
