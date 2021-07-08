@@ -44,7 +44,16 @@ router.post("/sub-category", (req, res, next) => {
   productSubCatModel.create(req.body, {include: [{model: productCatModel}]}).then((result) => res.json({data: result}), (err) => {res.send(err)});
 });
 
-router.get("/products/:subCatId", (req, res, next) => {
+router.get("/products-cat/:catId", (req, res, next) => {
+  productModel.findAll({
+    where: {
+      cat_id: req.params.catId
+    },
+    include: [{model: imageModel, attributes: ['id','uri']}]
+  }).then((result) => res.json({data: result}));
+});
+
+router.get("/products-subcat/:subCatId", (req, res, next) => {
   productModel.findAll({
     where: {
       subCat_id: req.params.subCatId
