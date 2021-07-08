@@ -3,9 +3,9 @@ var Sequelize = require("sequelize");
 var dotenv = require('dotenv');
 dotenv.config();
 
-var sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
-    host: process.env.DB_HOST,
-    dialect: process.env.DB_DIALECT
+var sequelize = new Sequelize('heroku_c7ac27e1b5b8c54', 'b74f8d3df89bcd', '389ac2d9', {
+    host: 'us-cdbr-east-04.cleardb.com',
+    dialect: 'mysql'
 }); 
 
 const users = require('../e_commerce_app/models/users');
