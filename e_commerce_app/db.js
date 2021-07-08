@@ -33,7 +33,7 @@ const imageModel = images(sequelize, Sequelize);
 addressModel.belongsTo(usersModel, {foreignKey: "user_id"});
 addressModel.hasOne(orderModel, {foreignKey: "address_id"});
 basketModel.belongsTo(usersModel, {foreignKey: "user_id"});
-basketModel.hasOne(orderModel, {foreignKey: "basket_id"});
+//basketModel.hasOne(orderModel, {foreignKey: "basket_id"});
 productCatModel.hasOne(imageModel, {foreignKey: "cat_id"});
 favModel.belongsTo(usersModel, {foreignKey: "user_id"});
 orderModel.belongsTo(usersModel, {foreignKey: "user_id"});

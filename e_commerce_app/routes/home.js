@@ -24,10 +24,7 @@ router.get("/sliders", (req,res,next) => {
 })
 
 router.post("/add-fav", (req, res, next) => {
-  favModel.create({
-    user_id: req.body.user_id,
-    product_id: req.body.product_id
-  }).then((result) => {
+  favModel.create(req.body).then((result) => {
     res.json({data: result})
   })
 })
