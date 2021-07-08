@@ -7,9 +7,9 @@ module.exports = (sequelize, Sequelize) => {
         }
     });
 
-    Slider.associate = models => {
-        Slider.hasOne(Image, {foreignKey: "slider_id"});
-    }
+    // Slider.associate = models => {
+    //     Slider.hasOne(models.Image);
+    // }
 
     return Slider;
 }

@@ -3,9 +3,9 @@ module.exports = (sequelize, Sequelize) => {
         
     })
 
-    Fav.associate = models => {
-        Fav.belongsTo(Users, {foreignKey: "user_id"});
-    }
+    // Fav.associate = models => {
+    //     Fav.belongsTo(models.Users);
+    // }
 
     return Fav;
 }

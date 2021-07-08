@@ -1,6 +1,3 @@
-const Users = require('./users');
-const Order = require('./orders')
-
 module.exports = (sequelize, Sequelize) => {
    const Address = sequelize.define("Addresses", {
 
@@ -48,11 +45,12 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false
         }
     });
-
-    Address.associate = models => {
-        Address.belongsTo(models.Users);
-        Address.hasOne(models.Order);
-    };
+    // Address.associate = models => {
+    //     console.log("sdkjfhkjlsdhfkjsdhfkj!!!!!")
+    //     console.log(models);
+    //     Address.belongsTo(models.Users, {foreignKey: "user_id"});
+    //     Address.hasOne(models.Order, {foreignKey: "address_id"});
+    // };
 
     return Address;
 }

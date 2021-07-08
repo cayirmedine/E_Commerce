@@ -6,9 +6,9 @@ module.exports = (sequelize, Sequelize) => {
         }
     })
 
-    ProductSubCat.associate = models => {
-        ProductSubCat.belongsTo(ProductCat, {foreignKey: "cat_id"});
-    }
+    // ProductSubCat.associate = models => {
+    //     ProductSubCat.belongsTo(models.ProductCat);
+    // }
 
     return ProductSubCat;
 }

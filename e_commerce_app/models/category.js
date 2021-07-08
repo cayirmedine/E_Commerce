@@ -6,9 +6,9 @@ module.exports = (sequelize, Sequelize) => {
         }
     })
 
-    ProductCat.associate = models => {
-        ProductCat.hasOne(Image, {foreignKey: "cat_id"});
-    } 
+    // ProductCat.associate = models => {
+    //     ProductCat.hasOne(models.Image);
+    // } 
 
     return ProductCat;
 }

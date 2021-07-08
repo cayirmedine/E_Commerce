@@ -35,9 +35,9 @@ module.exports = (sequelize, Sequelize) => {
         }
     })
 
-    Order.associate = models => {
-        Order.belongsTo(Users, {foreignKey: "user_id"});
-    }
+    // Order.associate = models => {
+    //     Order.belongsTo(models.Users);
+    // }
 
     return Order;
 }

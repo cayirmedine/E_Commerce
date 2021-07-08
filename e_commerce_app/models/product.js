@@ -16,13 +16,13 @@ module.exports = (sequelize, Sequelize) => {
         }
     })
 
-    Product.associate = models => {
-        Product.belongsTo(ProductSubCat, {foreignKey: "subCat_id"});
-        Product.belongsTo(ProductCat, {foreignKey: "cat_id"});
-        Product.hasMany(Basket, {foreignKey: "product_id"});
-        Product.hasMany(Fav, {foreignKey: "product_id"});
-        Product.hasMany(Image, {foreignKey: "product_id"});
-    }
+    // Product.associate = models => {
+    //     Product.belongsTo(models.ProductSubCat);
+    //     Product.belongsTo(models.ProductCat);
+    //     Product.hasMany(models.Basket);
+    //     Product.hasMany(models.Fav);
+    //     Product.hasMany(models.Image);
+    // }
 
     return Product;
 }

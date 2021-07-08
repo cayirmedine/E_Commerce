@@ -3,10 +3,10 @@ module.exports = (sequelize, Sequelize) => {
         
     })
 
-    Basket.associate = models => {
-        Basket.belongsTo(Users, {foreignKey: "user_id"});
-        Basket.hasOne(Order, {foreignKey: "basket_id"});
-    }
+    // Basket.associate = models => {
+    //     Basket.belongsTo(models.Users);
+    //     Basket.hasOne(models.Order);
+    // }
 
     return Basket;
 }

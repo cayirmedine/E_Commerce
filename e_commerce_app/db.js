@@ -30,16 +30,20 @@ const productSubCatModel = subCategory(sequelize, Sequelize);
 const productModel = product(sequelize, Sequelize);
 const imageModel = images(sequelize, Sequelize);
 
-
-
-
-
-
-
-
-
-
-
+addressModel.belongsTo(usersModel, {foreignKey: "user_id"});
+addressModel.hasOne(orderModel, {foreignKey: "address_id"});
+basketModel.belongsTo(usersModel, {foreignKey: "user_id"});
+basketModel.hasOne(orderModel, {foreignKey: "basket_id"});
+productCatModel.hasOne(imageModel, {foreignKey: "cat_id"});
+favModel.belongsTo(usersModel, {foreignKey: "user_id"});
+orderModel.belongsTo(usersModel, {foreignKey: "user_id"});
+productModel.belongsTo(productSubCatModel, {foreignKey: "subCat_id"});
+productModel.belongsTo(productCatModel, {foreignKey: "cat_id"});
+productModel.hasMany(basketModel, {foreignKey: "product_id"});
+productModel.hasMany(favModel, {foreignKey: "product_id"});
+productModel.hasMany(imageModel, {foreignKey: "product_id"});
+sliderModel.hasOne(imageModel, {foreignKey: "slider_id"});
+productSubCatModel.belongsTo(productCatModel, {foreignKey: "cat_id"});
 
 module.exports = {
     usersModel,
