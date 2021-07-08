@@ -8,7 +8,7 @@ var sequelize = new Sequelize('heroku_c7ac27e1b5b8c54', 'b74f8d3df89bcd', '389ac
     dialect: 'mysql'
 }); 
 
-const users = require('../e_commerce_app/models/users');
+const users = require('./models/users');
 const address = require('../e_commerce_app/models/address');
 const basket = require('../e_commerce_app/models/basket');
 const category = require('../e_commerce_app/models/category');
