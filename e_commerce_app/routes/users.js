@@ -19,7 +19,8 @@ router.post('/sign-in', (req, res, next) => {
   }).then((user) => {
     if(user) {
       if(user.password == req.body.password) {
-        res.send("Sign in successfull");
+        // res.send("Sign in successfull");
+        res.json({data: user});
       } else {
         res.send("Wrong password");
       }
