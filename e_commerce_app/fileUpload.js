@@ -11,7 +11,7 @@ var uploadS3 = multer({
     storage: multerS3({
       acl: "public-read-write",
       s3: s3,
-      bucket: 'e-commerce-storage',
+      bucket: process.env.BUCKET_NAME,
       metadata: (req, file, cb) => {
         cb(null, {fieldName: file.fieldname});
       },
