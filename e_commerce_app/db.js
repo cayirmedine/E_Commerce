@@ -9,15 +9,15 @@ var sequelize = new Sequelize('heroku_c7ac27e1b5b8c54', 'b74f8d3df89bcd', '389ac
 }); 
 
 const users = require('./models/users');
-const address = require('../e_commerce_app/models/address');
-const basket = require('../e_commerce_app/models/basket');
-const category = require('../e_commerce_app/models/category');
-const favorites = require('../e_commerce_app/models/favorites');
-const orders = require('../e_commerce_app/models/orders');
-const slider = require('../e_commerce_app/models/slider');
-const subCategory = require('../e_commerce_app/models/subCategory');
-const product = require('../e_commerce_app/models/product');
-const images = require('../e_commerce_app/models/imgUpload');
+const address = require('./models/address');
+const basket = require('./models/basket');
+const category = require('./models/category');
+const favorites = require('./models/favorites');
+const orders = require('./models/orders');
+const slider = require('./models/slider');
+const subCategory = require('./models/subCategory');
+const product = require('./models/product');
+const images = require('./models/imgUpload');
 
 const usersModel = users(sequelize, Sequelize);
 const addressModel = address(sequelize, Sequelize);
