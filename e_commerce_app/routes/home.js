@@ -1,5 +1,5 @@
 var express = require('express');
-const { sliderModel, imageModel, favModel, productModel } = require('../db');
+const { sliderModel, imageModel, favModel, campaignModel } = require('../db');
 const uploadS3 = require('../fileUpload');
 var router = express.Router();
 
@@ -54,5 +54,28 @@ router.delete("/delete-fav/:favId", (req, res, next) => {
     }
   })
 })
+
+// router.post("/add-campaign", uploadS3.single('image'), async (req, res, next) => {
+//   await campaignModel.create({
+//     title: req.body.title,
+//     desc: req.body.desc
+//   }).then(async (result) => {
+//     await req.files.forEach(async (img) => {
+//       imageModel.create({
+//         uri: img.location,
+//         campaign_id: result.id
+//       })
+//     })
+//     res.json({data: result})
+//   }, (err) => res.send("An error occoured: "+err)) 
+// });
+
+// router.get("/campaigns", (req, res, next) => {
+//   campaignModel.findAll({
+//     include: [ { model: imageModel, attributes: ['id','uri']}]
+//   }).then((result) => {
+//     res.json({ data: result })
+//   })
+// })
 
 module.exports = router;

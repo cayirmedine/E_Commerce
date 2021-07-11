@@ -25,10 +25,13 @@ module.exports = (sequelize, Sequelize) => {
         },
 
         birthdate: {
-            type: Sequelize.DATE,
+            type: Sequelize.DATEONLY,
             allowNull: false,
-            get() {
-                return moment(this.getDataValue('bdate')).format('DD/MM/YYYY');
+            // get() {
+            //     return moment(this.getDataValue('birthdate')).format('DD.MM.YYYY');
+            // }
+            dialectOptions: {
+                useUTC: false, // for reading from database
             }
         },
 
