@@ -18,7 +18,7 @@ const users = require('./models/users');
 const address = require('./models/address');
 const basket = require('./models/basket');
 const category = require('./models/category');
-// const campaign = require('./models/campaign');
+const campaign = require('./models/campaign');
 const favorites = require('./models/favorites');
 const orders = require('./models/orders');
 const slider = require('./models/slider');
@@ -29,7 +29,7 @@ const images = require('./models/imgUpload');
 const usersModel = users(sequelize, Sequelize);
 const addressModel = address(sequelize, Sequelize);
 const basketModel = basket(sequelize, Sequelize);
-// const campaignModel = campaign(sequelize, Sequelize);
+const campaignModel = campaign(sequelize, Sequelize);
 const productCatModel = category(sequelize, Sequelize);
 const favModel = favorites(sequelize, Sequelize);
 const orderModel = orders(sequelize, Sequelize);
@@ -42,7 +42,7 @@ addressModel.belongsTo(usersModel, {foreignKey: "user_id"});
 addressModel.hasOne(orderModel, {foreignKey: "address_id"});
 basketModel.belongsTo(usersModel, {foreignKey: "user_id"});
 //basketModel.hasOne(orderModel, {foreignKey: "basket_id"});
-// campaignModel.hasOne(imageModel, {foreignKey: "campaign_id"});
+campaignModel.hasOne(imageModel, {foreignKey: "campaign_id"});
 productCatModel.hasOne(imageModel, {foreignKey: "cat_id"});
 favModel.belongsTo(usersModel, {foreignKey: "user_id"});
 orderModel.belongsTo(usersModel, {foreignKey: "user_id"});
@@ -58,13 +58,13 @@ module.exports = {
     usersModel,
     addressModel,
     basketModel,
-    // campaignModel,
     productCatModel,
     favModel,
     orderModel,
     sliderModel,
     productSubCatModel,
     productModel,
+    campaignModel,
     imageModel,
     sequelize,
     Sequelize
