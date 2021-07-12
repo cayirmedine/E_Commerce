@@ -6,8 +6,17 @@ var s3 = new aws.S3({
     accessKeyId: process.env.S3_ACCESS_KEY_ID,
     secretAccessKey: process.env.S3_SECRET_ACCESS_KEY
    })
+
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
+      cb(null, true);
+    } else {
+      cb(new Error(), false);
+    }
+  };
   
 var uploadS3 = multer({
+    fileFilter,
     storage: multerS3({
       acl: "public-read-write",
       s3: s3,

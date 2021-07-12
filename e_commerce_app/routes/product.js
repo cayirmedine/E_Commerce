@@ -7,10 +7,6 @@ dotenv.config();
 const { productCatModel, productSubCatModel, productModel, subCatsCat, productSubCat, productCat, imageModel, imageSubCat } = require('../db');
 const uploadS3 = require('../fileUpload');
 
-router.get("/", (req,res,next) => {
-  res.send("Test");
-})
-
 router.get("/categories", (req, res, next) => {
   productCatModel.findAll({
     include: [ { model: imageModel, attributes: ['id','uri']}]
@@ -28,6 +24,8 @@ router.post("/add-category", uploadS3.single('image'), async (req, res, next) =>
       cat_id: result.id
     })
     res.send({data: result});
+  }, () => {
+    res.send("Invalid file type, only JPEG and PNG is allowed!")
   })
 });
 

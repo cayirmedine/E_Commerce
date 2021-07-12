@@ -12,6 +12,8 @@ router.post("/add-slider",uploadS3.single('image'), async (req,res,next) => {
       slider_id: result.id
     })
     res.send({data: result});
+  }, () => {
+    res.send("Invalid file type, only JPEG and PNG is allowed!")
   })
 }) 
 
@@ -65,7 +67,9 @@ router.post("/add-campaign", uploadS3.single('image'), async (req, res, next) =>
       campaign_id: result.id
     })
     res.send({data: result});
-  }, (err) => {res.send("An error occoured: " +err)})
+  }, () => {
+    res.send("Invalid file type, only JPEG and PNG is allowed!")
+  })
 })
 
 router.get("/campaigns", (req, res, next) => {

@@ -11,7 +11,7 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false
         },
 
-        desc: {
+        description: {
             type: Sequelize.STRING,
         }
     })

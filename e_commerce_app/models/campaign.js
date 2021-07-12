@@ -6,9 +6,24 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false
         },
 
-        desc: {
+        description: {
             type: Sequelize.STRING,
             allowNull: false
+        },
+
+        endDate: {
+            type: Sequelize.DATE,
+            allowNull: false
+        },
+
+        isActive: {
+            type: Sequelize.BOOLEAN,
+            defaultValue: true
+        },
+
+        isInSlider: {
+            type: Sequelize.BOOLEAN,
+            defaultValue: false
         }
         
     })
