@@ -5,7 +5,7 @@ var router = express.Router();
 //const {checkPhone, checkResult} = require('../validators/checkPhone')
 
 router.post("/add-address", (req, res, next) => {
-    addressModel.create(req.body).then((result) => res.json({data: result}), (err) => res.send("An error occoured: " +err));
+    addressModel.create(req.body).then((result) => res.json({data: result}), (err) => res.send("An  error occoured: " +err));
 })
 
 router.get("/addresses/:userId", (req, res, next) => {
