@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-
+var path = require('path');
 var dotenv = require('dotenv');
 dotenv.config();
 
@@ -24,9 +24,7 @@ router.post("/add-category", uploadS3.single('image'), async (req, res, next) =>
       cat_id: result.id
     })
     res.send({data: result});
-  }, () => {
-    res.send("Invalid file type, only JPEG and PNG is allowed!")
-  })
+  }, (err) => res.send("Invalid file type, only JPEG and PNG is allowed! " +err))
 });
 
 router.get("/sub-categories/:catId", (req, res, next) => {
@@ -76,7 +74,7 @@ router.post("/add-product", uploadS3.array("images",5), (req, res, next) => {
     subCat_id: req.body.subCat_id,
     title: req.body.title,
     unitPrice: req.body.unitPrice,
-    desc: req.body.desc
+    description: req.body.description
   }).then(async (result) => {
     req.files.forEach((img) => {
       imageModel.create({

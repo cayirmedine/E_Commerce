@@ -1,5 +1,5 @@
 var express = require('express');
-const { sliderModel, imageModel, favModel, campaignModel} = require('../db');
+const { sliderModel, imageModel, favModel, campaignModel, productModel} = require('../db');
 const uploadS3 = require('../fileUpload');
 var router = express.Router();
 
@@ -60,15 +60,19 @@ router.delete("/delete-fav/:favId", (req, res, next) => {
 router.post("/add-campaign", uploadS3.single('image'), async (req, res, next) => {
   await campaignModel.create({
     title: req.body.title,
-    desc: req.body.desc
+    description: req.body.description,
+    endDate: req.body.endDate,
+    isActive: req.body.isActive,
+    isInSlider: req.body.isInSlider,
+    product_id: req.body.product_id
   }).then(async (result) => {
     await imageModel.create({
       uri: req.file.location,
       campaign_id: result.id
     })
     res.send({data: result});
-  }, () => {
-    res.send("Invalid file type, only JPEG and PNG is allowed!")
+  }, (err) => {
+    res.send(err)
   })
 })
 

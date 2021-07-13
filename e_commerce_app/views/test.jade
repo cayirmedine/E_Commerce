@@ -1,0 +1,62 @@
+doctype html
+html(:class="{ 'theme-dark': dark }" x-data='data()' lang='en')
+  head
+    meta(charset='UTF-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1.0')
+    title Add Category
+    link(href='https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap' rel='stylesheet')
+    link(rel='stylesheet' href='/stylesheets/tailwind.output.css')
+    style.
+      input[type=file]::-webkit-file-upload-button {
+      border:0;
+      padding-left:.5rem;
+      padding-right:.5rem;
+      padding-top:.25rem;
+      padding-bottom:.25rem;
+      border-radius:.375rem;
+      font-size:.875rem;
+      color: white;
+      background-color: #7e3af2;
+      transition: 1s;
+      }
+      input[type=file]::file-selector-button {
+      border:0;
+      padding-left:.5rem;
+      padding-right:.5rem;
+      padding-top:.25rem;
+      padding-bottom:.25rem;
+      border-radius:.375rem;
+      font-size:.875rem;
+      color: white;
+      background-color: #7e3af2;
+      transition: 1s;
+      }
+      input[type=file]::-webkit-file-upload-button:hover {
+      background-color: #6c2bd9;
+      }
+      input[type=file]::file-selector-button:hover {
+      background-color: #6c2bd9;
+      }
+    script(src='https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js' defer='')
+    script(src='/javascripts/init-alpine.js')
+  body
+    .flex.items-center.min-h-screen.p-6.bg-gray-50(class='dark:bg-gray-900')
+      .flex-1.h-full.max-w-4xl.mx-auto.overflow-hidden.bg-white.rounded-lg.shadow-xl(class='dark:bg-gray-800')
+        .flex.flex-col.overflow-y-auto(class='md:flex-row')
+          .h-32(class='md:h-auto md:w-1/2')
+            img.object-cover.w-full.h-full(aria-hidden='true' class='dark:hidden' src='/images/create-account-office.jpeg' alt='Office')
+            img.hidden.object-cover.w-full.h-full(aria-hidden='true' class='dark:block' src='/images/create-account-office-dark.jpeg' alt='Office')
+          .flex.items-center.justify-center.p-6(class='sm:p-12 md:w-1/2')
+            .w-full
+              h1.mb-4.text-xl.font-semibold.text-gray-700(class='dark:text-gray-200')
+                | Add Category
+              form(action='/product/add-category', method='POST')
+                label.block.text-sm
+                  span.text-gray-700(class='dark:text-gray-400') Title
+                  input.block.w-full.mt-1.text-sm.form-input(class='dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray' name='title')
+                label.block.mt-8.text-sm
+                  span.text-gray-700(class='dark:text-gray-400') Image
+                  input.block.w-full.mt-1.text-sm.form-input(class='dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray' name='image' id='image' type='file' accept='.jpg,.gif,.png')
+                
+                button.block.w-full.px-4.py-2.mt-16.text-sm.font-medium.leading-5.text-center.text-white.transition-colors.duration-150.bg-purple-600.border.border-transparent.rounded-lg(class='active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple' type='submit')
+                  | Create New Category
