@@ -11,6 +11,11 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false
         },
 
+        startDate: {
+            type: Sequelize.DATE,
+            allowNull: false
+        },
+
         endDate: {
             type: Sequelize.DATE,
             allowNull: false
@@ -18,7 +23,8 @@ module.exports = (sequelize, Sequelize) => {
 
         isActive: {
             type: Sequelize.BOOLEAN,
-            defaultValue: true
+            defaultValue: true,
+            defaultValue: false
         },
 
         isInSlider: {
