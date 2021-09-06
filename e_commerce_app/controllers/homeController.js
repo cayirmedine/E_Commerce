@@ -1,5 +1,5 @@
 const { favModel, imageModel, sliderModel, sequelize } = require("../database/db");
-const { createSlider } = require("../services/sliderService");
+const { createSlider, updateSlider } = require("../services/sliderService");
 const modelService = require("../services/modelService");
 const attributes = require("../helpers/attributes");
 const { paginate } = require("../services/paginate");
@@ -19,6 +19,7 @@ module.exports = {
     }
   },
 
+  //GET /home/all-sliders
   slidersFindAll: async (req, res, next) => {
     let options = {
       include: [{ model: imageModel, attributes: attributes.imageModel }],
@@ -30,6 +31,24 @@ module.exports = {
       res.json({ status: "Success", data: sliders });
     } catch (error) {
       error.message = "Get all sliders is not successful: " + error;
+      next(error);
+    }
+  },
+
+  //PUT /home/update-slider/:sliderId
+  updateSlider: async (req, res, next) => {
+    const t = await sequelize.transaction();
+    const { sliderId } = req.params;
+    try {
+      const updatedSlider = await updateSlider(req, { where: { id: sliderId }}, { transaction: t });
+
+      await t.commit();
+
+      res.json({ status: "Success", data: updatedSlider });
+
+    } catch(error) {
+      res.status(422).send({ status: "Error", data: error.message });
+      await t.rollback();
       next(error);
     }
   },
@@ -46,6 +65,7 @@ module.exports = {
     }
   },
 
+  //GET /home/favs/:userId
   usersFavsFindAll: async (req, res, next) => {
     const { userId } = req.params;
     let page = req.query.page;

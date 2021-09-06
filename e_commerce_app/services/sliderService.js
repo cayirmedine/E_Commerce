@@ -45,7 +45,7 @@ module.exports = {
     return slider;
   },
 
-  updateSlider: async (req, options, modelId, modelType, t) => {
+  updateSlider: async (req, options, t, modelId, modelType) => {
     const slider = await modelService.update(
       sliderModel,
       options,

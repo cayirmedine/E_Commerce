@@ -84,7 +84,7 @@ module.exports = {
       }
     } else {
       if (data.isInSlider) {
-        await updateSlider(req, { title: title }, modelId, imageType, t);
+        await updateSlider(req, { title: title }, t, modelId, imageType);
       } else {
         if (req.file != undefined) {
           var images = await updateRelationalImageData(

@@ -363,7 +363,7 @@ module.exports = {
     }
   },
 
-  //UPDATE /admin/product/products/:productId(Web)
+  //PUT /admin/product/products/:productId(Web)
   updateProduct: async (req, res, next) => {
     const t = await sequelize.transaction();
     const { productId } = req.params;
