@@ -15,7 +15,10 @@ const { paginate } = require("../services/paginate");
 var moment = require("moment");
 var now = moment(new Date());
 
-const { relationalCreate } = require("../services/imageModelRelationsService");
+const {
+  relationalCreate,
+  relationalUpdate,
+} = require("../services/imageModelRelationsService");
 
 module.exports = {
   //GET /admin/product/campaigns(Web)
@@ -88,45 +91,13 @@ module.exports = {
     };
 
     try {
-      // const campaign = await modelService.create(
-      //   campaignModel,
-      //   campaignOptions,
-      //   { transaction: t }
-      // );
-
-      // if (req.file == null) {
-      //   throw new Error("Image field is required");
-      // }
-
-      // const { location } = req.file;
-
-      // if (campaign.isInSlider) {
-      //   try {
-      //     await createSlider(
-      //       req,
-      //       {
-      //         title: campaign.title,
-      //         campaign_id: campaign.id,
-      //       },
-      //       t
-      //     );
-      //   } catch (error) {
-      //     res.status(422).send({ status: "Error", data: error.message });
-      //     await t.rollback();
-      //     next(error);
-      //   }
-      // } else {
-      //   await modelService.create(
-      //     imageModel,
-      //     {
-      //       uri: location,
-      //       campaign_id: campaign.id,
-      //     },
-      //     { transaction: t }
-      //   );
-      // }
-
-      const campaign = await relationalCreate(req, campaignModel, campaignOptions, t, "campaign_id");
+      const campaign = await relationalCreate(
+        req,
+        campaignModel,
+        campaignOptions,
+        t,
+        "campaign_id"
+      );
 
       for (const product of products) {
         await modelService.create(
@@ -151,7 +122,6 @@ module.exports = {
 
   //GET /admin/product/campaign-product/:campaignId(Web)
   campaignProductFindAll: async (req, res, next) => {
-    
     const { campaignId } = req.params;
     let page = req.query.page;
 
@@ -195,72 +165,92 @@ module.exports = {
 
   //PUT /admin/product/campaigns/:campaignId(Web)
   updateCampaign: async (req, res, next) => {
+    const t = await sequelize.transaction();
     const { campaignId } = req.params;
-    const { location } = req.file;
-    const { title, isInSlider, products } =
-      req.body;
+    // const { location } = req.file;
+    const { products } = req.body;
+    console.log(products);
 
-    // campaignAttr = {};
-    // campaignAttr.title = title;
-    // campaignAttr.description = description;
-    // campaignAttr.startDate = startDate;
-    // campaignAttr.endDate = endDate;
-    // campaignAttr.isActive = isActive;
-    // campaignAttr.isInSlider = isInSlider;
+    // let campaignCondition = {
+    //   where: {
+    //     id: campaignId,
+    //   },
+    // };
 
-    let campaignCondition = {
-      where: {
-        id: campaignId,
-      },
-    };
-
-    let imageSliderCondition = {
-      where: {
-        campaign_id: campaignId,
-      },
-    };
+    // let imageSliderCondition = {
+    //   where: {
+    //     campaign_id: campaignId,
+    //   },
+    // };
 
     try {
-      const updatedCampaign = await modelService.update(
+      // const updatedCampaign = await modelService.update(
+      //   campaignModel,
+      //   req.body,
+      //   campaignCondition
+      // );
+
+      // // if (isInSlider) {
+      //   if (isInSlider == "true") {
+      //     // const slider = await modelService.create(sliderModel, {
+      //     //   title: title,
+      //     //   campaign_id: campaignId,
+      //     // });
+
+      //     // await modelService.update(
+      //     //   imageModel,
+      //     //   { uri: location, slider_id: slider.id },
+      //     //   imageSliderCondition
+      //     // );
+      //   } else {
+      //     await modelService.delete(sliderModel, imageSliderCondition);
+      //     await modelService.update(
+      //       imageModel,
+      //       { uri: location },
+      //       imageSliderCondition
+      //     );
+      //   }
+      // }
+      var updatedCampaign = await relationalUpdate(
+        req,
         campaignModel,
+        campaignId,
         req.body,
-        campaignCondition
+        t,
+        "campaign_id"
       );
 
-      // if (isInSlider) {
-        if (isInSlider == "true") {
-          const slider = await modelService.create(sliderModel, {
-            title: title,
-            campaign_id: campaignId,
-          });
+      if (products != undefined) {
+        console.log("Inside of product condition");
+        await modelService.delete(
+          campaignProductModel,
+          {
+            where: {
+              campaign_id: campaignId,
+            },
+          },
+          { transaction: t }
+        );
 
-          await modelService.update(
-            imageModel,
-            { uri: location, slider_id: slider.id },
-            imageSliderCondition
-          );
-        } else {
-          await modelService.delete(sliderModel, imageSliderCondition);
-          await modelService.update(
-            imageModel,
-            { uri: location },
-            imageSliderCondition
-          );
-        }
-      // }
+        for(const product of products) {
+          try {
+            await modelService.create(
+              campaignProductModel,
+              { product_id: product, campaign_id: campaignId },
+              { transaction: t }
+            );
+          } catch (error) {
+            throw new Error("Product(s) can not be added to db");
+          }
+        };
+      }
 
-      await modelService.delete(campaignProductModel, imageSliderCondition);
-      
-      products.forEach(async (product) => {
-        await modelService.create(campaignProductModel, {
-          product_id: product,
-          campaign_id: campaignId,
-        });
-      });
+      await t.commit();
 
       res.json({ status: "Success", data: updatedCampaign });
     } catch (error) {
-      error.message = "Update campaign is not successful: " + error;
+      res.status(422).send({ status: "Error", data: error.message });
+      await t.rollback();
       next(error);
     }
   },

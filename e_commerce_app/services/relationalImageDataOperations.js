@@ -5,46 +5,61 @@ module.exports = {
   createRelationalImageData: async (
     imageArray,
     imageType,
-    relationalData,
+    relationalDataId,
     t
   ) => {
+    var images;
     if (imageArray.length == 1) {
-      await modelService.create(
+      images = await modelService.create(
         imageModel,
-        { uri: imageArray[0].location, [imageType]: relationalData.id },
+        { uri: imageArray[0].location, [imageType]: relationalDataId },
         { transaction: t }
       );
     } else {
       for (const img of imageArray) {
-        await modelService.create(
+        images = await modelService.create(
           imageModel,
           {
             uri: img.location,
-            [imageType]: relationalData.id,
+            [imageType]: relationalDataId,
           },
           { transaction: t }
         );
       }
     }
+    return images;
   },
 
   updateRelationalImageData: async (imageArray, imageType, modelId, t) => {
-    var image;
-    if(imageArray.length == 1) {
-      image = await modelService.update(
+    var images;
+    if (imageArray.length == 1) {
+      images = await modelService.update(
         imageModel,
         { uri: imageArray[0].location },
         {
           where: {
-            [imageType]: modelId
-          }
+            [imageType]: modelId,
+          },
         },
         { transaction: t }
-      )
+      );
     } else {
-
+      for (const img of imageArray) {
+        const test = await modelService.create(
+          imageModel,
+          {
+            uri: img.location,
+            [imageType]: modelId,
+          },
+          { transaction: t }
+        );
+        console.log(test);
+      }
     }
+    return images;
+  },
 
-    return image;
-  }
+  deleteRelationalImageData: async (imageType, modelId, t) => {
+    await modelService.delete(imageModel, { where: { [imageType]: modelId } }, t);
+  },
 };

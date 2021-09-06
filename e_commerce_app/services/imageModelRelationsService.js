@@ -1,6 +1,15 @@
-const { createRelationalImageData, updateRelationalImageData } = require("./relationalImageDataOperations");
+const {
+  createRelationalImageData,
+  updateRelationalImageData,
+  deleteRelationalImageData
+} = require("./relationalImageDataOperations");
 const modelService = require("../services/modelService");
-const { createSlider } = require("../services/sliderService");
+const {
+  createSlider,
+  updateSlidersImage,
+  deleteSlider,
+} = require("../services/sliderService");
+const { imageModel } = require("../database/db");
 
 module.exports = {
   relationalCreate: async (req, modelName, options, t, imageType) => {
@@ -9,56 +18,108 @@ module.exports = {
     });
 
     if (createdData.isInSlider) {
-        await createSlider(
-          req,
-          {
-            title: createdData.title,
-            [imageType]: createdData.id,
-          },
-          t
-        );
+      await createSlider(
+        req,
+        {
+          title: createdData.title,
+          [imageType]: createdData.id,
+        },
+        t
+      );
     } else {
-        
       if (req.file == undefined && req.files == undefined) {
         throw new Error("Image(s) field is required");
       }
 
       if (req.file != undefined) {
-        await createRelationalImageData([req.file], imageType, createdData, t);
+        await createRelationalImageData(
+          [req.file],
+          imageType,
+          createdData.id,
+          t
+        );
       }
 
       if (req.files != undefined)
-        await createRelationalImageData(req.files, imageType, createdData, t);
+        await createRelationalImageData(
+          req.files,
+          imageType,
+          createdData.id,
+          t
+        );
     }
     return createdData;
   },
 
-  relationalUpdate: async (req, modelName, modelId, modelOptions, t, imageType) => {
-    const updatedData = await modelService.update(
-        modelName,
-        modelOptions,
-        {
-          where: {
-            id: modelId
-          }
-        },
-        { transaction: t }
-      );
+  relationalUpdate: async (
+    req,
+    modelName,
+    modelId,
+    modelOptions,
+    t,
+    imageType
+  ) => {
+    const { isInSlider, title } = req.body;
 
+    const data = await modelService.findOne(
+      modelName,
+      {
+        where: { id: modelId },
+      },
+      { transaction: t }
+    );
+
+    if (isInSlider) {
+      console.log("Inside of isInSlider condition");
+      console.log(data.isInSlider, isInSlider);
+      if (!data.isInSlider && isInSlider == "true") {
+        await updateSlidersImage(
+          req,
+          { title: title, [imageType]: modelId },
+          t,
+          modelId,
+          imageType
+        );
+      } else if (data.isInSlider && isInSlider == "false") {
+        await deleteSlider({ where: { [imageType]: modelId } }, t);
+      }
+    } else {
       if (req.file != undefined) {
-        // const { location } = req.file;
-        // var image = await modelService.update(
-        //   imageModel,
-        //   { uri: location },
-        //   { 
-        //     where: {
-        //     [imageType]: modelId 
-        //     }
-        //   }
-        // );
-        var image = await updateRelationalImageData([req.file], imageType, modelId, t);
+        var images = await updateRelationalImageData(
+          [req.file],
+          imageType,
+          modelId,
+          t
+        );
       }
 
-      return {updatedData, image};
+      if (req.files != undefined) {
+        await modelService.delete(imageModel, {
+          where: { [imageType]: modelId },
+        });
+        await updateRelationalImageData(req.files, imageType, modelId, t);
+      }
+    }
+
+    const updatedData = await modelService.update(
+      modelName,
+      modelOptions,
+      {
+        where: {
+          id: modelId,
+        },
+      },
+      { transaction: t }
+    );
+
+    return { updatedData, images };
+  },
+
+  relationalDelete: async (modelName, modelType, modelId, t) => {
+    await deleteRelationalImageData(modelType, modelId, t);
+
+    const deletedData = await modelService.delete(modelName, { where: { id: modelId }}, t);
+
+    return deletedData;
   }
 };

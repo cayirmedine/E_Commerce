@@ -11,7 +11,11 @@ const { paginate } = require("../services/paginate");
 
 const { sequelize } = require("../database/db");
 
-const { relationalCreate, relationalUpdate } = require("../services/imageModelRelationsService");
+const {
+  relationalCreate,
+  relationalUpdate,
+  relationalDelete,
+} = require("../services/imageModelRelationsService");
 
 module.exports = {
   //GET /admin/product/categories(Web) & /product/categories(Mobile)
@@ -36,24 +40,6 @@ module.exports = {
     const t = await sequelize.transaction();
 
     try {
-      // const category = await modelService.create(productCatModel, req.body, {
-      //   transaction: t,
-      // });
-
-      // if (req.file == null) {
-      //   let imageError = new Error("Image field is required");
-      //   throw imageError;
-      // }
-
-      // const { location } = req.file;
-
-      // let options = {
-      //   uri: location,
-      //   cat_id: category.id,
-      // };
-
-      // await modelService.create(imageModel, options, { transaction: t });
-
       const category = await relationalCreate(
         req,
         productCatModel,
@@ -94,69 +80,43 @@ module.exports = {
     const t = await sequelize.transaction();
     const { catId } = req.params;
 
-    // let categoryCondition = {
-    //   where: {
-    //     id: catId,
-    //   },
-    // };
-
-    // let imageCondition = {
-    //   where: {
-    //     cat_id: catId,
-    //   },
-    // };
-
     try {
-      // const category = await modelService.update(
-      //   productCatModel,
-      //   req.body,
-      //   categoryCondition
-      // );
-
-      // if (req.file != undefined) {
-      //   console.log("Inside if condition");
-      //   const { location } = req.file;
-      //   var image = await modelService.update(
-      //     imageModel,
-      //     { uri: location },
-      //     imageCondition
-      //   );
-      // }
-     const category = await relationalUpdate(req, productCatModel, catId, req.body, t, "cat_id");
+      const category = await relationalUpdate(
+        req,
+        productCatModel,
+        catId,
+        req.body,
+        t,
+        "cat_id"
+      );
+      await t.commit();
       res.json({ status: "Success", data: category });
     } catch (error) {
       res.status(422).send({ status: "Error", data: error.message });
+      await t.rollback();
       next(error);
     }
   },
 
   //DELETE /categories/:catId(Web)
   deleteCategory: async (req, res, next) => {
+    const t = await sequelize.transaction();
     const { catId } = req.params;
 
-    let imageCondition = {
-      where: {
-        cat_id: catId,
-      },
-    };
-
-    let categoryCondition = {
-      where: {
-        id: catId,
-      },
-    };
-
     try {
-      await modelService.delete(imageModel, imageCondition);
-
-      const category = await modelService.delete(
+      const deletedCategory = await relationalDelete(
         productCatModel,
-        categoryCondition
+        "cat_id",
+        catId,
+        { transaction: t }
       );
 
-      res.json({ status: "Success", data: category });
+      await t.commit();
+
+      res.json({ status: "Success", data: deletedCategory });
     } catch (error) {
-      error.message = "Delete category is not successful: " + error;
+      res.status(422).send({ status: "Error", data: error.message });
+      await t.rollback();
       next(error);
     }
   },
@@ -346,24 +306,6 @@ module.exports = {
     const t = await sequelize.transaction();
 
     try {
-      // const product = await modelService.create(productModel, req.body, {
-      //   transaction: t,
-      // });
-
-      // if (req.files == []) {
-      //   throw new Error("Images field is required");
-      // }
-
-      // for (const img of req.files) {
-      //   await modelService.create(
-      //     imageModel,
-      //     {
-      //       uri: img.location,
-      //       product_id: product.id,
-      //     },
-      //     { transaction: t }
-      //   );
-      // }
       console.log(req.files);
       const product = await relationalCreate(
         req,
@@ -423,74 +365,42 @@ module.exports = {
 
   //UPDATE /admin/product/products/:productId(Web)
   updateProduct: async (req, res, next) => {
+    const t = await sequelize.transaction();
     const { productId } = req.params;
 
-    let productCondition = {
-      where: {
-        id: productId,
-      },
-    };
-
-    let imageCondition = {
-      where: {
-        product_id: productId,
-      },
-    };
-
     try {
-      const product = await modelService.update(
+      var product = await relationalUpdate(
+        req,
         productModel,
+        productId,
         req.body,
-        productCondition
+        t,
+        "product_id"
       );
-
-      if (req.files != undefined) {
-        await modelService.delete(imageModel, imageCondition);
-
-        req.files.forEach(async (img) => {
-          let imageCondition = {
-            uri: img.location,
-            product_id: productId,
-          };
-
-          await modelService.create(imageModel, imageCondition);
-        });
-      }
-
+      await t.commit();
       res.json({ status: "Success", data: product });
     } catch (error) {
       res.status(422).send({ status: "Error", data: error.message });
+      await t.rollback();
       next(error);
     }
   },
 
   //DELETE /admin/product/products/:productId(Web)
   deleteProduct: async (req, res, next) => {
+    const t = await sequelize.transaction();
     const { productId } = req.params;
 
-    let imageCondition = {
-      where: {
-        product_id: productId,
-      },
-    };
-
-    let productCondition = {
-      where: {
-        id: productId,
-      },
-    };
-
     try {
-      await modelService.delete(imageModel, imageCondition);
 
-      const deletedProduct = await modelService.delete(
-        productModel,
-        productCondition
-      );
+      const deletedProduct = await relationalDelete(productModel, "product_id", productId, { transaction: t });
+
+      await t.commit();
 
       res.json({ status: "Success", data: deletedProduct });
     } catch (error) {
-      error.message = "Delete product is not successful: " + error;
+      res.status(422).send({ status: "Error", data: error.message });
+      await t.rollback();
       next(error);
     }
   },
