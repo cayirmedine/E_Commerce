@@ -18,6 +18,7 @@ var now = moment(new Date());
 const {
   relationalCreate,
   relationalUpdate,
+  relationalDelete,
 } = require("../services/imageModelRelationsService");
 
 module.exports = {
@@ -232,7 +233,7 @@ module.exports = {
           { transaction: t }
         );
 
-        for(const product of products) {
+        for (const product of products) {
           try {
             await modelService.create(
               campaignProductModel,
@@ -242,7 +243,7 @@ module.exports = {
           } catch (error) {
             throw new Error("Product(s) can not be added to db");
           }
-        };
+        }
       }
 
       await t.commit();
@@ -257,39 +258,22 @@ module.exports = {
 
   //DELETE /admin/product/campaigns/:campaignId(Web)
   deleteCampaign: async (req, res, next) => {
+    const t = await sequelize.transaction();
     const { campaignId } = req.params;
 
-    let condition = {
-      where: {
-        campaign_id: campaignId,
-      },
-    };
-
-    let campaignCondition = {
-      where: {
-        id: campaignId,
-      },
-    };
-
     try {
-      await modelService.delete(imageModel, condition);
-
-      const slider = await modelService.findOne(sliderModel, condition);
-
-      if (slider) {
-        await modelService.delete(sliderModel, condition);
-      }
-
-      await modelService.delete(campaignProductModel, condition);
-
-      const deletedCampaign = await modelService.delete(
+      const deletedCampaign = await relationalDelete(
         campaignModel,
-        campaignCondition
+        "campaign_id",
+        campaignId,
+        { transaction: t }
       );
 
+      await t.commit();
       res.json({ status: "Success", data: deletedCampaign });
     } catch (error) {
-      error.message = "Delete campaign is not successful: " + error;
+      res.status(422).send({ status: "Error", data: error.message });
+      await t.rollback();
       next(error);
     }
   },

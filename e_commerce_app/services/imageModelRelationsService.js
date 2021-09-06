@@ -1,7 +1,7 @@
 const {
   createRelationalImageData,
   updateRelationalImageData,
-  deleteRelationalImageData
+  deleteRelationalImageData,
 } = require("./relationalImageDataOperations");
 const modelService = require("../services/modelService");
 const {
@@ -9,7 +9,7 @@ const {
   updateSlidersImage,
   deleteSlider,
 } = require("../services/sliderService");
-const { imageModel } = require("../database/db");
+const { imageModel, sliderModel } = require("../database/db");
 
 module.exports = {
   relationalCreate: async (req, modelName, options, t, imageType) => {
@@ -118,8 +118,22 @@ module.exports = {
   relationalDelete: async (modelName, modelType, modelId, t) => {
     await deleteRelationalImageData(modelType, modelId, t);
 
-    const deletedData = await modelService.delete(modelName, { where: { id: modelId }}, t);
+    const potentialData = await modelService.findOne(modelName, {
+      where: { id: modelId },
+    });
+
+    // console.log(isInSliderData.isInSlider);
+
+    if (potentialData.isInSlider == "true") {
+      modelService.delete(sliderModel, { where: { [modelType]: modelId } });
+    }
+
+    const deletedData = await modelService.delete(
+      modelName,
+      { where: { id: modelId } },
+      t
+    );
 
     return deletedData;
-  }
+  },
 };
