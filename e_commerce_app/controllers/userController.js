@@ -108,7 +108,7 @@ module.exports = {
     };
 
     try {
-      const changedPassword = await modelService.update(usersModel, attributes, condition);
+      await modelService.update(usersModel, attributes, condition);
       res.json({ status: "Success", data: "Password is changed." });
     } catch (error) {
       error.message = "Change password is not successful: " + error;

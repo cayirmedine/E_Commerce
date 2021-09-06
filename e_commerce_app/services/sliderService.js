@@ -1,10 +1,6 @@
 const { sliderModel, imageModel } = require("../database/db");
 const slider = require("../models/home/slider");
 const modelService = require("../services/modelService");
-const {
-  createRelationalImageData,
-  updateRelationalImageData,
-} = require("./relationalImageDataOperations");
 
 module.exports = {
   createSlider: async (req, options, t) => {
@@ -14,26 +10,24 @@ module.exports = {
 
     if (req.file == undefined) {
       throw new Error("Image field is required");
-    } else {
-      await createRelationalImageData([req.file], ["slider_id","campaign_id"], [slider.id, slider.campaign_id], t);
     }
 
-    // const { location } = req.file;
+    const { location } = req.file;
 
-    // await modelService.create(
-    //   imageModel,
-    //   {
-    //     uri: location,
-    //     slider_id: slider.id,
-    //     campaign_id: slider.campaign_id,
-    //   },
-    //   { transaction: t }
-    // );
+    await modelService.create(
+      imageModel,
+      {
+        uri: location,
+        slider_id: slider.id,
+        campaign_id: slider.campaign_id,
+      },
+      { transaction: t }
+    );
 
     return slider;
   },
 
-  updateSlidersImage: async (req, options, t, modelId, modelType) => {
+  updateSlidersImage: async (req, options, modelId, modelType, t) => {
     const slider = await modelService.create(sliderModel, options, {
       transaction: t,
     });
@@ -45,6 +39,29 @@ module.exports = {
         { uri: location, slider_id: slider.id },
         { where: { [modelType]: modelId } },
         { transaction: t }
+      );
+    }
+
+    return slider;
+  },
+
+  updateSlider: async (req, options, modelId, modelType, t) => {
+    const slider = await modelService.update(
+      sliderModel,
+      options,
+      {
+        where: { [modelType]: modelId },
+      },
+      t
+    );
+
+    if (req.file != undefined) {
+      let { location } = req.file;
+      await modelService.update(
+        imageModel,
+        { uri: location, slider_id: slider.id },
+        { where: { [modelType]: modelId } },
+        t
       );
     }
 

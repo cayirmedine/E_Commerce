@@ -44,8 +44,9 @@ module.exports = {
         { transaction: t }
       );
     } else {
+      var imageCounter = 0;
       for (const img of imageArray) {
-        const test = await modelService.create(
+        await modelService.create(
           imageModel,
           {
             uri: img.location,
@@ -53,13 +54,18 @@ module.exports = {
           },
           { transaction: t }
         );
-        console.log(test);
+        await imageCounter++;
       }
+      images = (await imageCounter) + " image(s) are updated";
     }
     return images;
   },
 
   deleteRelationalImageData: async (imageType, modelId, t) => {
-    await modelService.delete(imageModel, { where: { [imageType]: modelId } }, t);
+    await modelService.delete(
+      imageModel,
+      { where: { [imageType]: modelId } },
+      t
+    );
   },
 };

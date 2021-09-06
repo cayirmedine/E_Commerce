@@ -7,6 +7,7 @@ const modelService = require("../services/modelService");
 const {
   createSlider,
   updateSlidersImage,
+  updateSlider,
   deleteSlider,
 } = require("../services/sliderService");
 const { imageModel, sliderModel } = require("../database/db");
@@ -69,9 +70,7 @@ module.exports = {
       { transaction: t }
     );
 
-    if (isInSlider) {
-      console.log("Inside of isInSlider condition");
-      console.log(data.isInSlider, isInSlider);
+    if (isInSlider != undefined) {
       if (!data.isInSlider && isInSlider == "true") {
         await updateSlidersImage(
           req,
@@ -84,20 +83,24 @@ module.exports = {
         await deleteSlider({ where: { [imageType]: modelId } }, t);
       }
     } else {
-      if (req.file != undefined) {
-        var images = await updateRelationalImageData(
-          [req.file],
-          imageType,
-          modelId,
-          t
-        );
-      }
+      if (data.isInSlider) {
+        await updateSlider(req, { title: title }, modelId, imageType, t);
+      } else {
+        if (req.file != undefined) {
+          var images = await updateRelationalImageData(
+            [req.file],
+            imageType,
+            modelId,
+            t
+          );
+        }
 
-      if (req.files != undefined) {
-        await modelService.delete(imageModel, {
-          where: { [imageType]: modelId },
-        });
-        await updateRelationalImageData(req.files, imageType, modelId, t);
+        if (req.files != undefined) {
+          var images = await modelService.delete(imageModel, {
+            where: { [imageType]: modelId },
+          });
+          await updateRelationalImageData(req.files, imageType, modelId, t);
+        }
       }
     }
 
@@ -118,13 +121,11 @@ module.exports = {
   relationalDelete: async (modelName, modelType, modelId, t) => {
     await deleteRelationalImageData(modelType, modelId, t);
 
-    const potentialData = await modelService.findOne(modelName, {
+    const data = await modelService.findOne(modelName, {
       where: { id: modelId },
     });
 
-    // console.log(isInSliderData.isInSlider);
-
-    if (potentialData.isInSlider == "true") {
+    if (data.isInSlider == "true") {
       modelService.delete(sliderModel, { where: { [modelType]: modelId } });
     }
 

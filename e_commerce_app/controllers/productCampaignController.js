@@ -2,7 +2,6 @@ const {
   imageModel,
   campaignProductModel,
   campaignModel,
-  sliderModel,
   sequelize,
 } = require("../database/db");
 const modelService = require("../services/modelService");
@@ -168,50 +167,10 @@ module.exports = {
   updateCampaign: async (req, res, next) => {
     const t = await sequelize.transaction();
     const { campaignId } = req.params;
-    // const { location } = req.file;
     const { products } = req.body;
     console.log(products);
 
-    // let campaignCondition = {
-    //   where: {
-    //     id: campaignId,
-    //   },
-    // };
-
-    // let imageSliderCondition = {
-    //   where: {
-    //     campaign_id: campaignId,
-    //   },
-    // };
-
     try {
-      // const updatedCampaign = await modelService.update(
-      //   campaignModel,
-      //   req.body,
-      //   campaignCondition
-      // );
-
-      // // if (isInSlider) {
-      //   if (isInSlider == "true") {
-      //     // const slider = await modelService.create(sliderModel, {
-      //     //   title: title,
-      //     //   campaign_id: campaignId,
-      //     // });
-
-      //     // await modelService.update(
-      //     //   imageModel,
-      //     //   { uri: location, slider_id: slider.id },
-      //     //   imageSliderCondition
-      //     // );
-      //   } else {
-      //     await modelService.delete(sliderModel, imageSliderCondition);
-      //     await modelService.update(
-      //       imageModel,
-      //       { uri: location },
-      //       imageSliderCondition
-      //     );
-      //   }
-      // }
       var updatedCampaign = await relationalUpdate(
         req,
         campaignModel,
