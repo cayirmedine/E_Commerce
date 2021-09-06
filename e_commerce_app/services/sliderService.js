@@ -64,12 +64,13 @@ module.exports = {
         t
       );
     }
-
     return slider;
   },
 
   deleteSlider: async (conditions, t) => {
-    await modelService.delete(sliderModel, conditions, { transaction: t });
+    const slider = await modelService.delete(sliderModel, conditions, {
+      transaction: t,
+    });
     return slider;
   },
 };

@@ -62,10 +62,12 @@ module.exports = {
   },
 
   deleteRelationalImageData: async (imageType, modelId, t) => {
-    await modelService.delete(
+    const images = await modelService.delete(
       imageModel,
       { where: { [imageType]: modelId } },
       t
     );
+
+    return images;
   },
 };

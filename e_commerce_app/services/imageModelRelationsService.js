@@ -119,7 +119,7 @@ module.exports = {
   },
 
   relationalDelete: async (modelName, modelType, modelId, t) => {
-    await deleteRelationalImageData(modelType, modelId, t);
+    const images = await deleteRelationalImageData(modelType, modelId, t);
 
     const data = await modelService.findOne(modelName, {
       where: { id: modelId },
@@ -135,6 +135,6 @@ module.exports = {
       t
     );
 
-    return deletedData;
+    return { deletedData, images };
   },
 };
