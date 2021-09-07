@@ -26,6 +26,7 @@ const subCategory = require('../models/product/subCategory');
 const product = require('../models/product/product');
 const images = require('../models/common/imgUpload');
 const campProduct = require('../models/product/campaignProduct');
+const cities = require('../models/common/city');
 
 const usersModel = users(sequelize, Sequelize);
 const addressModel = address(sequelize, Sequelize);
@@ -39,6 +40,7 @@ const productSubCatModel = subCategory(sequelize, Sequelize);
 const productModel = product(sequelize, Sequelize);
 const imageModel = images(sequelize, Sequelize);
 const campaignProductModel = campProduct(sequelize, Sequelize);
+const cityModel = cities(sequelize, Sequelize);
 
 addressModel.belongsTo(usersModel, {foreignKey: "user_id"});
 addressModel.hasOne(orderModel, {foreignKey: "address_id"});
@@ -57,6 +59,7 @@ productSubCatModel.belongsTo(productCatModel, {foreignKey: "cat_id"});
 campaignModel.hasOne(sliderModel, {foreignKey: "campaign_id"});
 campaignModel.hasMany(campaignProductModel, {foreignKey: "campaign_id"});
 productModel.hasMany(campaignProductModel, {foreignKey:"product_id"});
+cityModel.hasOne(addressModel, { foreignKey: "city_id" });
 
 module.exports = {
     usersModel,
@@ -71,6 +74,7 @@ module.exports = {
     campaignModel,
     imageModel,
     campaignProductModel,
+    cityModel,
     sequelize,
     Sequelize
 };
