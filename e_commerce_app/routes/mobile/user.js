@@ -9,7 +9,7 @@ router.post("/sign-up", validate.signUp, userController.signUp);
 
 router.post("/sign-in", userController.signIn);
 
-router.post("/add-address", checkAuth, userController.createAddress);
+router.post("/add-address", checkAuth, validate.addAddress, userController.createAddress);
 
 router.get("/addresses/:userId", checkAuth, userController.userAddresses);
 

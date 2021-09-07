@@ -13,17 +13,6 @@ const validate = require("../../validators/products");
 
 router.get("/categories", checkAuth, productController.categoriesFindAll);
 
-// let update = async (req, res, next) => {
-//   try {
-//     console.log("try-catch update");
-//     await uploadS3.single("image");
-//     next();
-//   } catch (error) {
-//     res.status(400).json({ error: "Image can not uploaded" });
-//     next(error);
-//   }
-// };
-
 router.post(
   "/categories",
   checkAuth,

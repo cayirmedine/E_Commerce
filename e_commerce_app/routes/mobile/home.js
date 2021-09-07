@@ -1,21 +1,22 @@
 var express = require("express");
-const uploadS3 = require("../../services/mediaUploadService");
+// const uploadS3 = require("../../services/mediaUploadService");
 var router = express.Router();
 
 const checkAuth = require("../../middlewares/checkAuth");
 const homeController = require("../../controllers/homeController");
 const productCampaignController = require("../../controllers/productCampaignController");
+const validate = require("../../validators/cart");
 
-router.post(
-  "/add-slider",
-  checkAuth,
-  uploadS3.single("image"),
-  homeController.createSlider
-);
+// router.post(
+//   "/add-slider",
+//   checkAuth,
+//   uploadS3.single("image"),
+//   homeController.createSlider
+// );
 
 router.get("/sliders", checkAuth, homeController.slidersFindAll);
 
-router.post("/add-fav", checkAuth, homeController.createFav);
+router.post("/add-fav", checkAuth, validate.productUserRelation, homeController.createFav);
 
 router.get("/favs/:userId", checkAuth, homeController.usersFavsFindAll);
 
