@@ -16,10 +16,10 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false
         },
 
-        city: {
-            type: Sequelize.STRING,
-            allowNull: false
-        },
+        // city: {
+        //     type: Sequelize.STRING,
+        //     allowNull: false
+        // },
 
         town: {
             type: Sequelize.STRING,

@@ -11,6 +11,8 @@ router.post("/sign-in", userController.signIn);
 
 router.post("/add-address", checkAuth, validate.addAddress, userController.createAddress);
 
+router.get("/cities/:cityId", checkAuth, userController.findCity);
+
 router.get("/addresses/:userId", checkAuth, userController.userAddresses);
 
 router.put("/password/:userId", checkAuth, userController.userChangePassword);

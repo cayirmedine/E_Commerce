@@ -134,7 +134,7 @@ module.exports = {
     }
   },
 
-  //GET /product/sub-categories/:catId(Mobile) & /admin/product/sub-categories-cat/:catId
+  //GET /product/sub-categories/:catId(Mobile) & /admin/product/sub-categories-cat/:catId(Web)
   categorySubCategoriesFindAll: async (req, res, next) => {
     const { catId } = req.params;
     let page = req.query.page;

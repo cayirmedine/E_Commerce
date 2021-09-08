@@ -1,4 +1,4 @@
-const { usersModel } = require("../database/db");
+const { usersModel, cityModel } = require("../database/db");
 const modelService = require("../services/modelService");
 const { createAddress, userAddresses } = require("../services/userService");
 const attributes = require("../helpers/attributes");
@@ -6,7 +6,6 @@ const attributes = require("../helpers/attributes");
 let random = require("random-key");
 
 module.exports = {
-
   //POST /user/sign-up
   signUp: async (req, res, next) => {
     const { fullName, phone, email, password, birthdate, gender } = req.body;
@@ -66,6 +65,22 @@ module.exports = {
       }
     } catch (error) {
       error.msg = "Missing parameter(s)";
+      next(error);
+    }
+  },
+
+  //GET /user/cities/:cityId
+  findCity: async (req, res, next) => {
+    const { cityId } = req.params;
+
+    try {
+      const city = await modelService.findOne(cityModel, {
+        where: { id: cityId },
+      });
+
+      res.json({ status: "Success", data: city.cityName });
+    } catch (error) {
+      error.message = "Get city name is not successful: " + error;
       next(error);
     }
   },
@@ -132,15 +147,19 @@ module.exports = {
     let contidion = {
       where: {
         id: userId,
-      }
-    }
+      },
+    };
 
     try {
-      const updateUser = await modelService.update(usersModel, attributes, contidion);
+      const updateUser = await modelService.update(
+        usersModel,
+        attributes,
+        contidion
+      );
       res.json({ status: "Success", data: updateUser });
-    } catch(error) {
-      error.message = "Update user is not successful: " +error;
+    } catch (error) {
+      error.message = "Update user is not successful: " + error;
       next(error);
     }
-  }
+  },
 };
