@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www"
+    "start": "nodemon ./bin/www",
+    "createCities": "node ./seeders/20210907082748-createCities"
   },
   "dependencies": {
     "aws-sdk": "^2.936.0",

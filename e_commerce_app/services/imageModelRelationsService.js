@@ -2,6 +2,7 @@ const {
   createRelationalImageData,
   updateRelationalImageData,
   deleteRelationalImageData,
+  deleteImageById,
 } = require("./relationalImageDataOperations");
 const modelService = require("../services/modelService");
 const {
@@ -60,7 +61,13 @@ module.exports = {
     t,
     imageType
   ) => {
-    const { isInSlider, title } = req.body;
+    const { isInSlider, title, imagesToDelete } = req.body;
+
+    if (imagesToDelete != undefined) {
+      for (const images of imagesToDelete) {
+        await deleteImageById(images, t);
+      }
+    }
 
     const data = await modelService.findOne(
       modelName,
@@ -96,10 +103,19 @@ module.exports = {
         }
 
         if (req.files != undefined) {
-          var images = await modelService.delete(imageModel, {
+          var imagesAtDB = await imageModel.count({
             where: { [imageType]: modelId },
           });
-          await updateRelationalImageData(req.files, imageType, modelId, t);
+          var imageCount = 5 - imagesAtDB;
+
+          await updateRelationalImageData(
+            req.files,
+            imageType,
+            modelId,
+            t,
+            imageCount,
+            imagesToDelete
+          );
         }
       }
     }

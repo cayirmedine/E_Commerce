@@ -30,7 +30,13 @@ module.exports = {
     return images;
   },
 
-  updateRelationalImageData: async (imageArray, imageType, modelId, t) => {
+  updateRelationalImageData: async (
+    imageArray,
+    imageType,
+    modelId,
+    t,
+    imageCount
+  ) => {
     var images;
     if (imageArray.length == 1) {
       images = await modelService.update(
@@ -46,17 +52,20 @@ module.exports = {
     } else {
       var imageCounter = 0;
       for (const img of imageArray) {
-        await modelService.create(
-          imageModel,
-          {
-            uri: img.location,
-            [imageType]: modelId,
-          },
-          { transaction: t }
-        );
-        await imageCounter++;
+        if (imageCount > 0) {
+          await modelService.create(
+            imageModel,
+            {
+              uri: img.location,
+              [imageType]: modelId,
+            },
+            { transaction: t }
+          );
+          await imageCounter++;
+          await imageCount--;
+        }
       }
-      images = (await imageCounter) + " image(s) are updated";
+      images = (imageCounter) + " image(s) are updated";
     }
     return images;
   },
@@ -70,4 +79,14 @@ module.exports = {
 
     return images;
   },
+
+  deleteImageById: async(imageId, t) => {
+    const images = await modelService.delete(
+      imageModel,
+      { where: { id: imageId }},
+      t
+    );
+
+    return images;
+  }
 };

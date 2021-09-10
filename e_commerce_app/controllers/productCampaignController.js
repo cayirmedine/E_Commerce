@@ -6,6 +6,7 @@ const {
 } = require("../database/db");
 const modelService = require("../services/modelService");
 const attributes = require("../helpers/attributes");
+const { arrayDataCreate } = require("../services/arrayDataOperationsService");
 
 const { Op } = require("sequelize");
 
@@ -65,7 +66,7 @@ module.exports = {
 
   //POST /admin/product/campaigns(Web)
   createCampaign: async (req, res, next) => {
-    const t = await sequelize.transaction();
+    var t = await sequelize.transaction();
     const { title, description, startDate, endDate, isInSlider, products } =
       req.body;
 
@@ -99,20 +100,19 @@ module.exports = {
         "campaign_id"
       );
 
-      for (const product of products) {
-        await modelService.create(
+      if (products != undefined) {
+        var productCount = await arrayDataCreate(
+          products,
           campaignProductModel,
-          {
-            campaign_id: campaign.id,
-            product_id: product,
-          },
-          { transaction: t }
+          { campaign_id: campaign.id },
+          "product_id",
+          t
         );
       }
 
       await t.commit();
 
-      res.json({ status: "Success", data: campaign });
+      res.json({ status: "Success", data: { campaign, productCount } });
     } catch (error) {
       res.status(422).send({ status: "Error", data: error.message });
       await t.rollback();
@@ -167,7 +167,7 @@ module.exports = {
   updateCampaign: async (req, res, next) => {
     const t = await sequelize.transaction();
     const { campaignId } = req.params;
-    const { products } = req.body;
+    const { products, productsToDelete } = req.body;
     console.log(products);
 
     try {
@@ -180,34 +180,33 @@ module.exports = {
         "campaign_id"
       );
 
-      if (products != undefined) {
-        console.log("Inside of product condition");
-        await modelService.delete(
-          campaignProductModel,
-          {
-            where: {
-              campaign_id: campaignId,
-            },
-          },
-          { transaction: t }
-        );
-
-        for (const product of products) {
+      if (productsToDelete != undefined) {
+        for (product of productsToDelete) {
           try {
-            await modelService.create(
+            await modelService.delete(
               campaignProductModel,
-              { product_id: product, campaign_id: campaignId },
+              { where: { product_id: product } },
               { transaction: t }
             );
           } catch (error) {
-            throw new Error("Product(s) can not be added to db");
+            throw new Error("Product can not removed from DB");
           }
         }
       }
 
+      if (products != undefined) {
+        var productCount = await arrayDataCreate(
+          products,
+          campaignProductModel,
+          { campaign_id: campaignId },
+          "product_id",
+          t
+        );
+      }
+
       await t.commit();
 
-      res.json({ status: "Success", data: updatedCampaign });
+      res.json({ status: "Success", data: { updatedCampaign, productCount } });
     } catch (error) {
       res.status(422).send({ status: "Error", data: error.message });
       await t.rollback();
