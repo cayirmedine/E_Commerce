@@ -5,9 +5,9 @@ const checkAuth = require("../../middlewares/checkAuth");
 const userController = require("../../controllers/userController");
 const validate = require("../../validators/auth");
 
-router.post("/sign-up", validate.signUp, userController.signUp);
+// router.post("/sign-up", validate.signUp, userController.signUp);
 
-router.post("/sign-in", userController.signIn);
+// router.post("/sign-in", userController.signIn);
 
 router.post("/add-address", checkAuth, validate.addAddress, userController.createAddress);
 
