@@ -4,6 +4,7 @@ const { createAddress, userAddresses } = require("../services/userService");
 const attributes = require("../helpers/attributes");
 
 let random = require("random-key");
+const { googleVerifyService } = require("../services/verifyService");
 
 module.exports = {
   //POST /user/sign-up
@@ -66,6 +67,75 @@ module.exports = {
     } catch (error) {
       error.msg = "Missing parameter(s)";
       next(error);
+    }
+  },
+
+  signInGoogle: async (req, res, next) => {
+
+    try {
+      const { token } = req.body;
+      let verifyInfo = await googleVerifyService(token);
+
+      if (verifyInfo) {
+        let options = {
+          where: {
+            email: verifyInfo.email,
+          },
+        };
+
+        let createdUserOptions = {
+          email: verifyInfo.email,
+          fullName: verifyInfo.fullName,
+          access_token: random.generate(250),
+        };
+
+        const user = await modelService.findOne(usersModel, options);
+
+        if (user) {
+          if (user.password != null) {
+            res.json({
+              status: "Success",
+              message: "This account is already exists",
+              data: {
+                access_token: user.dataValues.access_token,
+                id: user.dataValues.id,
+                fullName: user.dataValues.fullName,
+                phone: user.dataValues.phone,
+                email: user.dataValues.email,
+                birthdate: user.dataValues.birthdate,
+                gender: user.dataValues.gender,
+              },
+            });
+          } else {
+            res.json({
+              status: "Success",
+              message: "Password creattion",
+              data: {
+                access_token: user.dataValues.access_token,
+                id: user.dataValues.id,
+                fullName: user.dataValues.fullName,
+                phone: user.dataValues.phone,
+                email: user.dataValues.email,
+              },
+            });
+          }
+        } else {
+          const newUser = await modelService.create(usersModel, createdUserOptions);
+          res.json({
+            status: 'success',
+            message: 'new account has been created.',
+            data: {
+              access_token: newUser.dataValues.access_token,
+              id: newUser.dataValues.id,
+              fullName: newUser.dataValues.fullName,
+              email: newUser.dataValues.email,
+            }
+          })
+        }
+      }
+    } catch (error) {
+        error.msg = "Google Auth Fail";
+        next(error);
     }
   },
 

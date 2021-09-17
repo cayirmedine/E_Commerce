@@ -4,10 +4,6 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var cors = require("cors");
-const session = require("express-session");
-var passport = require("passport");
-require("./services/googleAuthService");
-require("./services/facebookAuthService");
 
 var indexRouter = require("./routes/admin/index");
 var usersRouter = require("./routes/mobile/user");
@@ -18,10 +14,6 @@ var productAdminRouter = require("./routes/admin/products");
 var authRouter = require("./routes/mobile/auth");
 
 var app = express();
-app.use(session({ secret: "cats" }));
-
-app.use(passport.initialize());
-app.use(passport.session());
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -31,7 +23,6 @@ app.use(cors());
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-// app.use(upload.array());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
