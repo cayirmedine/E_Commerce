@@ -15,4 +15,6 @@ router.post("/sign-in", userController.signIn);
 
 router.post("/google-signin", userController.signInGoogle);
 
+router.post("/facebook-signin", userController.signInFacebook);
+
 module.exports = router;

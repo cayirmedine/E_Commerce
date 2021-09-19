@@ -4,7 +4,10 @@ const { createAddress, userAddresses } = require("../services/userService");
 const attributes = require("../helpers/attributes");
 
 let random = require("random-key");
-const { googleVerifyService } = require("../services/verifyService");
+const {
+  googleVerifyService,
+  facebookVerifyService,
+} = require("../services/verifyService");
 
 module.exports = {
   //POST /user/sign-up
@@ -74,7 +77,6 @@ module.exports = {
   },
 
   signInGoogle: async (req, res, next) => {
-
     try {
       const { token } = req.body;
       await console.log("Token", token);
@@ -130,22 +132,103 @@ module.exports = {
             });
           }
         } else {
-          const newUser = await modelService.create(usersModel, createdUserOptions);
+          const newUser = await modelService.create(
+            usersModel,
+            createdUserOptions
+          );
           res.json({
-            status: 'success',
-            message: 'new account has been created.',
+            status: "success",
+            message: "new account has been created.",
             data: {
               access_token: newUser.dataValues.access_token,
               id: newUser.dataValues.id,
               fullName: newUser.dataValues.fullName,
               email: newUser.dataValues.email,
-            }
-          })
+            },
+          });
         }
       }
     } catch (error) {
-        error.msg = "Google Auth Fail";
-        next(error);
+      error.msg = "Google Auth Fail";
+      next(error);
+    }
+  },
+
+  signInFacebook: async (req, res, next) => {
+    try {
+      await console.log("IS IN????????");
+      const { token, email, fullName } = req.body;
+      let verifyInfo = await facebookVerifyService(token);
+      await console.log("VERIFY INFO", verifyInfo);
+      if (!verifyInfo.includes("error")) {
+        let options = {
+          where: {
+            email: email,
+          },
+        };
+        let createdUserOptions = {
+          email: email,
+          fullName: fullName,
+          phone: "5555555555",
+          password: "1111111",
+          birthdate: "01-01-1999",
+          gender: "Female",
+          access_token: random.generate(250),
+        };
+        const user = await modelService.findOne(usersModel, options);
+        if (user) {
+          if (user.password != null) {
+            await console.log("TESTT 11111111111");
+            res.json({
+              status: "Success",
+              message: "This account already exists",
+              data: {
+                access_token: user.dataValues.access_token,
+                id: user.dataValues.id,
+                fullName: user.dataValues.fullName,
+                email: user.dataValues.email,
+                phone: user.dataValues.phone,
+              },
+            });
+          } else {
+            await console.log("TESTT 22222222222222");
+            res.json({
+              status: "Success",
+              message: "Password creation",
+              data: {
+                access_token: user.dataValues.access_token,
+                id: user.dataValues.id,
+                fullName: user.dataValues.fullName,
+                email: user.dataValues.email,
+              },
+            });
+          }
+        } else {
+          await console.log("TESTT 33333333333");
+          const newUser = await modelService.create(
+            usersModel,
+            createdUserOptions
+          );
+          res.json({
+            status: "Success",
+            message: "New account has been created.",
+            data: {
+              access_token: newUser.dataValues.access_token,
+              id: newUser.dataValues.id,
+              fullName: newUser.dataValues.fullName,
+              email: newUser.dataValues.email,
+            },
+          });
+        }
+      } else {
+        res.status(500).send({
+          status: "Error",
+          message: "Facebook Auth Error",
+        });
+      }
+    } catch (error) {
+      error.msg = "Facebook Auth Error";
+      next(error);
     }
   },
 
