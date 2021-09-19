@@ -15,8 +15,8 @@ module.exports = {
   },
 
   // find or created a data
-  findOrCreate: async function (model, options, transaction) {
-    const [data, created] = await model.findOrCreate(options, transaction);
+  findOrCreate: async function (model, options) {
+    const [data, created] = await model.findOrCreate(options);
     if (created == true) {
       return data;
     }

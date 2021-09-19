@@ -26,6 +26,9 @@ module.exports = {
           access_token: random.generate(250),
         },
       };
+
+      await console.log(options.where);
+      await console.log(options.defaults);
       const user = await modelService.findOrCreate(usersModel, options);
 
       if (user) {
@@ -74,7 +77,10 @@ module.exports = {
 
     try {
       const { token } = req.body;
+      await console.log("Token", token);
       let verifyInfo = await googleVerifyService(token);
+      await console.log("VerifyInfo", verifyInfo);
+      // await console.log("Verify Info Email", verifyInfo.email);
 
       if (verifyInfo) {
         let options = {
@@ -86,6 +92,10 @@ module.exports = {
         let createdUserOptions = {
           email: verifyInfo.email,
           fullName: verifyInfo.fullName,
+          phone: "5555555555",
+          password: "1111111",
+          birthdate: "01-01-1999",
+          gender: "Female",
           access_token: random.generate(250),
         };
 
@@ -109,7 +119,7 @@ module.exports = {
           } else {
             res.json({
               status: "Success",
-              message: "Password creattion",
+              message: "Password creation",
               data: {
                 access_token: user.dataValues.access_token,
                 id: user.dataValues.id,

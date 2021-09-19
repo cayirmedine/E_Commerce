@@ -16,16 +16,16 @@ async function verify(token) {
   const familyName = payload.family_name;
   let data = {};
   data.email = email;
-  data.fullName = givenName + " " +familyName;
+  data.fullName = givenName + " " + familyName;
 
   return data;
 }
 
-module.exports.googleVerifyService = async(token) => {
-    try {
-        let verifyInfo = await verify(token);
-        return verifyInfo;
-    } catch(error) {
-        console.log("Error", error);
-    }
-}
+module.exports.googleVerifyService = async (token) => {
+  try {
+    let verifyInfo = await verify(token);
+    return verifyInfo;
+  } catch (error) {
+    console.log("Error", error);
+  }
+};
