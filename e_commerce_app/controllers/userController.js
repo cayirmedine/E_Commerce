@@ -2,6 +2,7 @@ const { usersModel, cityModel } = require("../database/db");
 const modelService = require("../services/modelService");
 const { createAddress, userAddresses } = require("../services/userService");
 const attributes = require("../helpers/attributes");
+const bcrypt = require("bcryptjs");
 
 let random = require("random-key");
 const {
@@ -16,6 +17,8 @@ module.exports = {
     const { fullName, phone, email, password, birthdate, gender } = req.body;
 
     try {
+      const hash = await bcrypt.hash(password, 10);
+
       let options = {
         where: {
           phone: phone,
@@ -24,7 +27,7 @@ module.exports = {
           fullName,
           phone,
           email,
-          password,
+          password: hash,
           birthdate,
           gender,
           access_token: random.generate(250),
@@ -53,10 +56,8 @@ module.exports = {
     const { phone, password } = req.body;
 
     let options = {
-      attributes: attributes.usersModel,
       where: {
         phone: phone,
-        password: password,
       },
     };
 
@@ -64,11 +65,19 @@ module.exports = {
       const user = await modelService.findOne(usersModel, options);
 
       if (user != null) {
-        res.json({ status: "Success", data: user });
+        const validPassword = await bcrypt.compare(password, user.password);
+        if(validPassword) {
+          res.json({ status: "Success", data: user });
+        } else {
+          res.status(422).send({
+            status: "Error",
+            error: "Password is not correct",
+          });
+        }
       } else {
         res.status(422).send({
           status: "Error",
-          error: "Username or password is not correct",
+          error: "Username is not correct",
         });
       }
     } catch (error) {
