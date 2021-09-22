@@ -5,6 +5,9 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 const https = require("https");
 
+const jwt = require("jsonwebtoken");
+const jwksClient = require("jwks-rsa");
+
 async function verify(token) {
   const ticket = await client.verifyIdToken({
     idToken: token,
@@ -21,6 +24,20 @@ async function verify(token) {
 
   return data;
 }
+
+const jwksRsaClient = jwksClient({
+  jwksUri: "https://appleid.apple.com/auth/keys",
+});
+
+async function getAppleSignInKey(kid) {
+  const key = await jwksRsaClient.getSigningKey(kid);
+  return key.getPublicKey();
+}
+
+const verifyApple = async (json, publicKey) => {
+  let verify = await jwt.verify(json, publicKey);
+  return verify;
+};
 
 module.exports.googleVerifyService = async (token) => {
   try {
@@ -45,8 +62,17 @@ module.exports.facebookVerifyService = async (token) =>
         });
       });
       req.on("error", (error) => {
-        console.error(error)
+        console.error(error);
       });
       req.end();
     } catch (error) {}
   });
+
+module.exports.appleVerifyService = async (token) => {
+  try {
+    const json = jwt.decode(token, { complete: true });
+    let kid = json.header.kid;
+    let appleKey = await getAppleSignInKey(kid);
+    return await verifyApple(token, appleKey);
+  } catch (error) {}
+};

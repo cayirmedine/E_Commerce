@@ -7,6 +7,7 @@ let random = require("random-key");
 const {
   googleVerifyService,
   facebookVerifyService,
+  appleVerifyService
 } = require("../services/verifyService");
 
 module.exports = {
@@ -82,7 +83,6 @@ module.exports = {
       await console.log("Token", token);
       let verifyInfo = await googleVerifyService(token);
       await console.log("VerifyInfo", verifyInfo);
-      // await console.log("Verify Info Email", verifyInfo.email);
 
       if (verifyInfo) {
         let options = {
@@ -156,10 +156,8 @@ module.exports = {
 
   signInFacebook: async (req, res, next) => {
     try {
-      await console.log("IS IN????????");
       const { token, email, fullName } = req.body;
       let verifyInfo = await facebookVerifyService(token);
-      await console.log("VERIFY INFO", verifyInfo);
       if (!verifyInfo.includes("error")) {
         let options = {
           where: {
@@ -178,7 +176,6 @@ module.exports = {
         const user = await modelService.findOne(usersModel, options);
         if (user) {
           if (user.password != null) {
-            await console.log("TESTT 11111111111");
             res.json({
               status: "Success",
               message: "This account already exists",
@@ -191,7 +188,6 @@ module.exports = {
               },
             });
           } else {
-            await console.log("TESTT 22222222222222");
             res.json({
               status: "Success",
               message: "Password creation",
@@ -204,7 +200,6 @@ module.exports = {
             });
           }
         } else {
-          await console.log("TESTT 33333333333");
           const newUser = await modelService.create(
             usersModel,
             createdUserOptions
@@ -228,6 +223,76 @@ module.exports = {
       }
     } catch (error) {
       error.msg = "Facebook Auth Error";
+      next(error);
+    }
+  },
+
+  signInApple: async (req, res, next) => {
+    try {
+      const { token, fullName } = req.body;
+      let verifyInfo = await appleVerifyService(token)
+      if(verifyInfo.email_verified == 'true') {
+        let options = {
+          where: {
+            email: verifyInfo.email,
+          }
+        }
+        let createdUserOptions = {
+          email: verifyInfo.email,
+          fullName: fullName,
+          phone: "5555555555",
+          password: "1111111",
+          birthdate: "01-01-1999",
+          gender: "Female",
+          access_token: random.generate(250),
+        }
+        const user = await modelService.findOne(usersModel, options);
+        if(user) {
+          if(user.password != null) {
+            res.json({
+              status: "Success",
+              message: 'This account already exists',
+              data: {
+                access_token: user.dataValues.access_token,
+                id: user.dataValues.id,
+                fullName: user.dataValues.fullName,
+                email: user.dataValues.email,
+                phone: user.dataValues.phone,
+              }
+            });
+          } else {
+            res.json({
+              status: 'Success',
+              message: 'Password creation',
+              data: {
+                access_token: user.dataValues.access_token,
+                id: user.dataValues.id,
+                fullName: user.dataValues.fullName,
+                email: user.dataValues.email,
+              }
+            })
+          }
+        } else {
+          const newUser = await modelService.create(usersModel, createdUserOptions);
+          res.json({
+            status: 'Success',
+            message: 'New account has been created.',
+            data: {
+              access_token: newUser.dataValues.access_token,
+              id: newUser.dataValues.id,
+              fullName: newUser.dataValues.fullName,
+              email: newUser.dataValues.email,
+            }
+          })
+        }
+      } else {
+        res.status(500).send({
+          status: 'Error',
+          message: 'Apple Auth Error',
+        })
+      }
+    } catch (error) {
+      error.msg = "Apple Auth Error " +error;
       next(error);
     }
   },
