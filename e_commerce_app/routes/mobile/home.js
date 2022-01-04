@@ -14,19 +14,19 @@ const validate = require("../../validators/cart");
 //   homeController.createSlider
 // );
 
-router.get("/sliders", checkAuth, homeController.slidersFindAll);
+router.get("/sliders",  homeController.slidersFindAll);
 
-router.post("/add-fav", checkAuth, validate.productUserRelation, homeController.createFav);
+router.post("/add-fav",  validate.productUserRelation, homeController.createFav);
 
-router.get("/favs/:userId", checkAuth, homeController.usersFavsFindAll);
+router.get("/favs/:userId",  homeController.usersFavsFindAll);
 
-router.delete("/delete-fav/:favId", checkAuth, homeController.deleteFav);
+router.delete("/delete-fav/:favId",  homeController.deleteFav);
 
-router.get("/campaigns", checkAuth, productCampaignController.campaignsFindAllMobile);
+router.get("/campaigns",  productCampaignController.campaignsFindAllMobile);
 
 router.get(
   "/campaign-detail/:campaignId",
-  checkAuth,
+  
   productCampaignController.campaignFindOne
 );
 

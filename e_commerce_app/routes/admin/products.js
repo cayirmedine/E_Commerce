@@ -11,21 +11,21 @@ const uploadS3 = require("../../services/mediaUploadService");
 
 const validate = require("../../validators/products");
 
-router.get("/categories", checkAuth, productController.categoriesFindAll);
+router.get("/categories",  productController.categoriesFindAll);
 
 router.post(
   "/categories",
-  checkAuth,
+  
   uploadS3.single("image"),
   validate.createCategory,
   productController.createCategory
 );
 
-router.get("/category/:catId", checkAuth, productController.categoryFindOne);
+router.get("/category/:catId",  productController.categoryFindOne);
 
 router.put(
   "/category/:catId",
-  checkAuth,
+  
   uploadS3.single("image"),
   validate.updateCategory,
   productController.updateCategory
@@ -33,64 +33,64 @@ router.put(
 
 router.delete(
   "/categories/:catId",
-  checkAuth,
+  
   productController.deleteCategory
 );
 
 router.get(
   "/sub-categories",
-  checkAuth,
+  
   productController.subCategoriesFindAll
 );
 
-router.post("/sub-categories", checkAuth, validate.createSubCat, productController.createSubCategory);
+router.post("/sub-categories",  validate.createSubCat, productController.createSubCategory);
 
 router.get(
   "/sub-categories/:subCatId",
-  checkAuth,
+  
   productController.subCategoryFindOne
 );
 
 router.get(
   "/sub-categories-cat/:catId",
-  checkAuth,
+  
   productController.categorySubCategoriesFindAll
 );
 
 router.put(
   "/sub-categories/:subCatId",
-  checkAuth,
+  
   validate.updateSubCat,
   productController.updateSubCategory
 );
 
 router.delete(
   "/sub-categories/:subCatId",
-  checkAuth,
+  
   productController.deleteSubCategory
 );
 
-router.get("/products", checkAuth, productController.productFindAll);
+router.get("/products",  productController.productFindAll);
 
 router.get(
   "/campaign-product/:campaignId",
-  checkAuth,
+  
   productCampaignController.campaignProductFindAll
 );
 
 router.post(
   "/products",
-  checkAuth,
+  
   uploadS3.array("images", 5),
   validate.createProduct,
   productController.createProduct
 );
 
-router.get("/products/:productId", checkAuth, productController.productFindOne);
+router.get("/products/:productId",  productController.productFindOne);
 
 router.put(
   "/products/:productId",
-  checkAuth,
+  
   uploadS3.array("images", 5),
   validate.updateProduct,
   productController.updateProduct
@@ -98,15 +98,15 @@ router.put(
 
 router.delete(
   "/products/:productId",
-  checkAuth,
+  
   productController.deleteProduct
 );
 
-router.get("/campaigns", checkAuth, productCampaignController.campaignsFindAll);
+router.get("/campaigns",  productCampaignController.campaignsFindAll);
 
 router.post(
   "/campaigns",
-  checkAuth,
+  
   uploadS3.single("image"),
   validate.createCampaign,
   productCampaignController.createCampaign
@@ -114,13 +114,13 @@ router.post(
 
 router.get(
   "/campaigns/:campaignId",
-  checkAuth,
+  
   productCampaignController.campaignFindOne
 );
 
 router.put(
   "/campaigns/:campaignId",
-  checkAuth,
+  
   uploadS3.single("image"),
   validate.updateCampaign,
   productCampaignController.updateCampaign
@@ -128,7 +128,7 @@ router.put(
 
 router.delete(
   "/campaigns/:campaignId",
-  checkAuth,
+  
   productCampaignController.deleteCampaign
 );
 

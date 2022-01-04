@@ -9,14 +9,14 @@ const validate = require("../../validators/auth");
 
 // router.post("/sign-in", userController.signIn);
 
-router.post("/add-address", checkAuth, validate.addAddress, userController.createAddress);
+router.post("/add-address",  validate.addAddress, userController.createAddress);
 
-router.get("/cities/:cityId", checkAuth, userController.findCity);
+router.get("/cities/:cityId",  userController.findCity);
 
-router.get("/addresses/:userId", checkAuth, userController.userAddresses);
+router.get("/addresses/:userId",  userController.userAddresses);
 
-router.put("/password/:userId", checkAuth, userController.userChangePassword);
+router.put("/password/:userId",  userController.userChangePassword);
 
-router.put("/update-info/:userId", checkAuth, validate.updateUser, userController.userUpdateInfo);
+router.put("/update-info/:userId",  validate.updateUser, userController.userUpdateInfo);
 
 module.exports = router;
