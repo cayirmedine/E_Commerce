@@ -35,9 +35,9 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING,
       allowNull: false,
     },
-    access_token: {
-      type: Sequelize.STRING,
-    },
+    // access_token: {
+    //   type: Sequelize.STRING,
+    // },
   });
 
   return Users;
