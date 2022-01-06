@@ -5,6 +5,7 @@ const attributes = require("../helpers/attributes");
 const bcrypt = require("bcryptjs");
 
 let random = require("random-key");
+
 const {
   googleVerifyService,
   facebookVerifyService,
@@ -30,7 +31,7 @@ module.exports = {
           password: hash,
           birthdate,
           gender,
-          access_token: random.generate(250),
+          //access_token: random.generate(250),
         },
       };
 
@@ -39,6 +40,7 @@ module.exports = {
       const user = await modelService.findOrCreate(usersModel, options);
 
       if (user) {
+        
         res.json({ status: "Success", data: user });
       } else {
         res
